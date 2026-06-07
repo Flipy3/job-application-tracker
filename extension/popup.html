@@ -14,13 +14,52 @@
 
       <form id="job-form" class="job-form">
         <label class="field">
+          <span>Email</span>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span>Password</span>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required
+          />
+        </label>
+
+        <label class="field">
           <span>Job Title</span>
-          <input id="job-title" name="title" type="text" autocomplete="off" />
+          <input
+            id="job-title"
+            name="title"
+            type="text"
+            autocomplete="off"
+            required
+          />
         </label>
 
         <label class="field">
           <span>Company</span>
-          <input id="company" name="company" type="text" autocomplete="off" />
+          <input
+            id="company"
+            name="company"
+            type="text"
+            autocomplete="off"
+            required
+          />
+        </label>
+
+        <label class="field">
+          <span>Salary</span>
+          <input id="salary" name="salary" type="text" autocomplete="off" />
         </label>
 
         <label class="field">
@@ -33,7 +72,11 @@
           <textarea id="notes" name="notes" rows="4"></textarea>
         </label>
 
-        <button type="submit" class="save-button">Save Job</button>
+        <button id="save-button" type="submit" class="save-button">
+          Save Job
+        </button>
+
+        <p id="save-status" class="save-status" role="status"></p>
       </form>
     </main>
 

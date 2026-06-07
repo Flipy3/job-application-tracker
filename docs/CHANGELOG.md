@@ -57,12 +57,31 @@
 - 未修改已有 Dashboard CRUD 功能
 - 未新增第三方依赖
 
+### Milestone 3B Completed
+
+- Chrome Extension Popup 新增 Salary 输入框
+- Chrome Extension Popup 新增 Email / Password 字段，用于安全认证后保存岗位
+- Save Job 点击后调用 Next.js API Route 写入 Supabase `jobs` 表
+- 新增 `POST /api/extension/jobs` 作为 Extension 到 Supabase 的中转接口
+- API Route 使用 Supabase Email + Password Auth 获取用户认证上下文，并按 RLS 写入当前用户的 `jobs` 记录
+- 写入字段包含 company、job title、job URL、salary、notes、status
+- 默认 status 为 `saved`
+- Popup 增加保存状态反馈：Saving、Saved successfully、失败错误提示
+- Manifest 增加本地 Web App API host permission：`http://localhost:3000/*`
+- Dashboard 已确认支持 salary 输入和展示，本阶段未修改 Dashboard CRUD
+- 未关闭 RLS
+- 未使用 service_role key
+- 未将 Supabase key 写入 extension
+- 未新增第三方依赖
+- 未实现自动解析岗位名称、公司名称或薪资
+
 ### Current Stable Version
 
-- `879d790 style: polish dashboard UI`
+- `b761ce4 feat: add chrome extension foundation`
 
 ### Next Actions
 
-- 下一步计划：Milestone 3B / Milestone 4，根据 TECHNICAL_PLAN 逐步实现岗位页面读取、解析与保存。
+- 下一步计划：Milestone 3C / Milestone 4，根据 TECHNICAL_PLAN 逐步实现岗位页面读取、解析与保存。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
+- 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。

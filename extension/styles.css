@@ -3,7 +3,7 @@
 }
 
 body {
-  width: 360px;
+  width: 380px;
   margin: 0;
   background: #f8fafc;
   color: #111827;
@@ -83,4 +83,29 @@ textarea:focus {
 
 .save-button:hover {
   background: #1d4ed8;
+}
+
+.save-button:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.save-status {
+  min-height: 18px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.save-status[data-state="saving"] {
+  color: #475569;
+}
+
+.save-status[data-state="success"] {
+  color: #047857;
+}
+
+.save-status[data-state="error"] {
+  color: #b91c1c;
 }
