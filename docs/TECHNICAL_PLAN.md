@@ -396,6 +396,33 @@ MVP 筛选：
 - 新增依赖
 - 组件重构或业务逻辑重构
 
+### 6.7 Milestone 4D - Dashboard Sort
+
+目标：为中文化后的 Dashboard 岗位列表增加排序能力，并与现有搜索和状态筛选组合使用。
+
+当前实现：
+
+- Dashboard Jobs List 的搜索和状态筛选区域新增 `排序` 下拉框
+- 排序选项包含：默认排序、最新优先、最早优先、公司名称 A-Z、公司名称 Z-A
+- 默认值为默认排序
+- 默认排序保留 `jobs` 原始顺序，不等同于最新优先
+- 排序使用 client-side sorting，不请求 Supabase
+- 处理顺序为：`jobs` → Search filter → Status filter → Sort → Render
+- 最新优先 / 最早优先使用 `created_at` 字段
+- 公司名称 A-Z / Z-A 使用 `company_name` 字段
+- 排序结果与现有 Search 和 Status Filter 组合生效
+- 岗位卡片中的公司字段仅显示实际公司名；展示层会避免把 `公司名称` label 前缀显示为公司数据
+- UI 文案保持简体中文风格
+
+本阶段明确不做：
+
+- Supabase schema 修改
+- Auth / RLS 修改
+- Chrome Extension 修改
+- Boss 解析逻辑修改
+- 服务端排序或数据库查询排序
+- 第三方依赖引入
+
 ---
 
 ## 7. 浏览器插件设计
@@ -867,7 +894,8 @@ job-application-tracker/
 | Milestone 4A：Duplicate Job URL Detection | Completed | Extension 保存 API 已在插入前检查同一用户下相同 `job_url`；重复时返回 `409`，Popup 显示 `该岗位链接已保存` |
 | Milestone 4B：Dashboard Search and Filter | Completed | Dashboard Jobs List 已支持按关键词实时搜索，并支持 All / Saved / Applied / Interview / Offer / Rejected 状态筛选 |
 | Milestone 4C：Dashboard Localization (ZH-CN) | Completed | Web App 与 Chrome Extension 用户可见文案已统一为简体中文，状态内部枚举值保持不变 |
-| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存、M4A 重复链接提示、M4B Dashboard 搜索筛选与 M4C 简体中文本地化；后续继续按子 Milestone 推进 |
+| Milestone 4D：Dashboard Sort | Completed | Dashboard Jobs List 已支持默认排序、最新优先、最早优先、公司名称 A-Z、公司名称 Z-A client-side 排序，并可与搜索和状态筛选组合使用 |
+| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存、M4A 重复链接提示、M4B Dashboard 搜索筛选、M4C 简体中文本地化与 M4D Dashboard 排序；后续继续按子 Milestone 推进 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 
 ---
@@ -932,18 +960,18 @@ MVP 完成后，可以考虑以下方向：
 
 当前最优先的下一步是：
 
-**手动验收 Milestone 4C：Dashboard Localization (ZH-CN)。**
+**手动验收 Milestone 4D：Dashboard Sort。**
 
 建议给 Codex 的下一条指令：
 
 ```text
-请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4C。
+请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4D。
 要求：
 1. 不提交 Git
-2. 检查 Web App 页面用户可见文案是否为简体中文
-3. 确认 Dashboard 状态显示为已收藏、已投递、面试中、已获得 Offer、已拒绝
-4. 确认 Search / Filter UI 已显示为搜索、状态、全部等中文文案
-5. 确认 Chrome Extension Popup 不再残留用户可见英文文案
+2. 确认 Dashboard Jobs List 出现「排序」下拉框
+3. 确认默认值为「默认排序」，并保留 jobs 原始顺序
+4. 确认「最新优先」「最早优先」「公司名称 A-Z」「公司名称 Z-A」均按预期排序
+5. 确认排序可与搜索和状态筛选组合生效
 ```
 
 

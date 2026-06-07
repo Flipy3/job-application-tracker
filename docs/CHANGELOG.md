@@ -193,13 +193,34 @@
 - 未新增第三方依赖
 - 未提交 Git，等待用户验收
 
+### Milestone 4D Completed
+
+- Milestone 4D - Dashboard Sort 已完成
+- Dashboard Jobs List 的搜索和状态筛选区域新增 `排序` 下拉框
+- 排序选项包含：默认排序、最新优先、最早优先、公司名称 A-Z、公司名称 Z-A
+- 默认值为默认排序
+- 默认排序保留 `jobs` 原始顺序，不等同于最新优先
+- 排序使用 client-side sorting，不请求 Supabase
+- 排序处理顺序为：`jobs` → Search filter → Status filter → Sort → Render
+- 最新优先 / 最早优先使用 `created_at` 字段排序
+- 公司名称 A-Z / Z-A 使用 `company_name` 字段排序
+- 排序可与现有 Search 和 Status Filter 组合生效
+- 修复岗位卡片公司字段展示，避免把 `公司名称` label 前缀显示为公司数据
+- UI 文案保持简体中文风格，未重新引入英文 UI 文案
+- 未修改 Supabase schema
+- 未修改 Auth / RLS
+- 未修改 Chrome Extension
+- 未修改 Boss 解析逻辑
+- 未新增第三方依赖
+- 未提交 Git，等待用户验收
+
 ### Current Stable Version
 
 - `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 4C；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
+- 下一步计划：手动验收 Milestone 4D；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
@@ -210,3 +231,4 @@
 - 注意：Milestone 4A 仅实现同一用户下完全相同 `job_url` 的重复保存提示，不包含 Dashboard CRUD、Boss 解析逻辑、schema、RLS、URL canonical 处理或多平台扩展。
 - 注意：Milestone 4B 仅实现 Dashboard client-side 搜索和状态筛选，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端搜索或第三方依赖。
 - 注意：Milestone 4C 仅实现用户可见文案简体中文本地化，不包含业务逻辑、schema、Auth、API Route 保存链路、枚举值、路由或文件名修改。
+- 注意：Milestone 4D 仅实现 Dashboard client-side 排序，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端排序或第三方依赖。

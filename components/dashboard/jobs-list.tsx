@@ -12,6 +12,39 @@ const statusLabels: Record<JobStatus, string> = {
   rejected: "已拒绝",
 };
 
+type SortOption =
+  | "default"
+  | "newest"
+  | "oldest"
+  | "company-asc"
+  | "company-desc";
+
+const sortOptions: Array<{
+  label: string;
+  value: SortOption;
+}> = [
+  {
+    label: "默认排序",
+    value: "default",
+  },
+  {
+    label: "最新优先",
+    value: "newest",
+  },
+  {
+    label: "最早优先",
+    value: "oldest",
+  },
+  {
+    label: "公司名称 A-Z",
+    value: "company-asc",
+  },
+  {
+    label: "公司名称 Z-A",
+    value: "company-desc",
+  },
+];
+
 const statusStyles: Record<
   JobStatus,
   {
@@ -64,10 +97,11 @@ export function JobsList({
 }: JobsListProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<JobStatus | "all">("all");
+  const [sortOption, setSortOption] = useState<SortOption>("default");
 
   const filteredJobs = useMemo(
-    () => filterJobs(jobs, searchQuery, statusFilter),
-    [jobs, searchQuery, statusFilter],
+    () => getVisibleJobs(jobs, searchQuery, statusFilter, sortOption),
+    [jobs, searchQuery, statusFilter, sortOption],
   );
 
   if (jobs.length === 0) {
@@ -97,7 +131,7 @@ export function JobsList({
         </div>
       </div>
 
-      <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_13rem]">
+      <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_13rem_13rem]">
         <label className="block space-y-2">
           <span className="text-sm font-medium text-zinc-700">搜索</span>
           <input
@@ -122,6 +156,23 @@ export function JobsList({
             {JOB_STATUSES.map((status) => (
               <option key={status} value={status}>
                 {statusLabels[status]}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="block space-y-2">
+          <span className="text-sm font-medium text-zinc-700">排序</span>
+          <select
+            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-900"
+            onChange={(event) =>
+              setSortOption(event.target.value as SortOption)
+            }
+            value={sortOption}
+          >
+            {sortOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
               </option>
             ))}
           </select>
@@ -162,7 +213,7 @@ export function JobsList({
                     </span>
                   </div>
                   <p className="mt-1 text-sm font-medium text-zinc-700">
-                    {job.company_name}
+                    {getDisplayCompanyName(job.company_name)}
                   </p>
                 </div>
 
@@ -272,14 +323,15 @@ function formatDate(value: string | null) {
   }).format(new Date(value));
 }
 
-function filterJobs(
+function getVisibleJobs(
   jobs: Job[],
   searchQuery: string,
   statusFilter: JobStatus | "all",
+  sortOption: SortOption,
 ) {
   const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  return jobs.filter((job) => {
+  const filteredJobs = jobs.filter((job) => {
     const matchesStatus =
       statusFilter === "all" || job.status === statusFilter;
     const matchesSearch =
@@ -298,4 +350,46 @@ function filterJobs(
 
     return matchesStatus && matchesSearch;
   });
+
+  return sortJobs(filteredJobs, sortOption);
+}
+
+function sortJobs(jobs: Job[], sortOption: SortOption) {
+  if (sortOption === "default") {
+    return jobs;
+  }
+
+  return [...jobs].sort((firstJob, secondJob) => {
+    if (sortOption === "oldest") {
+      return getCreatedAtTime(firstJob) - getCreatedAtTime(secondJob);
+    }
+
+    if (sortOption === "company-asc") {
+      return compareCompanyNames(firstJob, secondJob);
+    }
+
+    if (sortOption === "company-desc") {
+      return compareCompanyNames(secondJob, firstJob);
+    }
+
+    return getCreatedAtTime(secondJob) - getCreatedAtTime(firstJob);
+  });
+}
+
+function getCreatedAtTime(job: Job) {
+  return job.created_at ? new Date(job.created_at).getTime() : 0;
+}
+
+function compareCompanyNames(firstJob: Job, secondJob: Job) {
+  return getDisplayCompanyName(firstJob.company_name).localeCompare(
+    getDisplayCompanyName(secondJob.company_name),
+    "en",
+    {
+      sensitivity: "base",
+    },
+  );
+}
+
+function getDisplayCompanyName(companyName: string) {
+  return companyName.replace(/^公司名称\s*/, "").trim();
 }
