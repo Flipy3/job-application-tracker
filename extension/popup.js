@@ -15,7 +15,7 @@ const saveStatus = document.getElementById("save-status");
 
 async function fillCurrentTabUrl() {
   if (typeof chrome === "undefined" || !chrome.tabs?.query) {
-    return;
+    return null;
   }
 
   const [activeTab] = await chrome.tabs.query({
@@ -26,6 +26,65 @@ async function fillCurrentTabUrl() {
   if (activeTab?.url) {
     urlInput.value = activeTab.url;
   }
+
+  return activeTab ?? null;
+}
+
+async function fillParsedJobFields(activeTab) {
+  if (!activeTab?.id || typeof chrome === "undefined" || !chrome.tabs?.sendMessage) {
+    return;
+  }
+
+  try {
+    const response = await sendMessageToTab(activeTab.id, {
+      type: "PARSE_CURRENT_JOB"
+    });
+    const job = response?.job;
+
+    if (!job) {
+      return;
+    }
+
+    fillInputIfValue(titleInput, job.title);
+    fillInputIfValue(companyInput, job.company);
+    fillInputIfValue(salaryInput, job.salary);
+    fillInputIfValue(locationInput, job.location);
+    fillInputIfValue(sourceInput, job.source);
+  } catch {
+    // Keep the popup editable when parsing is unavailable on the current tab.
+  }
+}
+
+function sendMessageToTab(tabId, message) {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.sendMessage(tabId, message, (response) => {
+      const error = chrome.runtime.lastError;
+
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve(response);
+    });
+  });
+}
+
+function fillInputIfValue(input, value) {
+  if (typeof value !== "string" || !value.trim()) {
+    return;
+  }
+
+  if (input.value.trim()) {
+    return;
+  }
+
+  input.value = value.trim();
+}
+
+async function initializePopup() {
+  const activeTab = await fillCurrentTabUrl();
+  await fillParsedJobFields(activeTab);
 }
 
 jobForm.addEventListener("submit", async (event) => {
@@ -71,7 +130,7 @@ jobForm.addEventListener("submit", async (event) => {
   }
 });
 
-document.addEventListener("DOMContentLoaded", fillCurrentTabUrl);
+document.addEventListener("DOMContentLoaded", initializePopup);
 
 function setSaveState(message, isSaving, state) {
   saveButton.disabled = isSaving;

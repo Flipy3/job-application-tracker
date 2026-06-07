@@ -114,6 +114,14 @@ MVP 包含以下能力：
 - `jobParser.ts`
 - `apiClient.ts`
 
+当前 MVP 简化实现使用根目录下的原生 Chrome Extension 文件：
+
+- `extension/manifest.json`
+- `extension/popup.html`
+- `extension/popup.js`
+- `extension/content.js`
+- `extension/styles.css`
+
 ### 3.3 后端与数据库
 
 使用 **Supabase**。
@@ -409,6 +417,38 @@ export type JobParser = {
 
 招聘网站 DOM 可能变化，所以解析逻辑不能写得太死。MVP 可以接受有限适配，但代码结构要允许后续扩展。
 
+### 7.6 Milestone 3C - Boss Job Auto Parsing
+
+目标：当用户打开 Boss 直聘职位详情页并点击插件 Popup 时，自动解析并填充岗位基础信息。
+
+本阶段仅支持 Boss 直聘，不支持 LinkedIn、Seek、Indeed、猎聘、拉勾或其他平台。
+
+当前实现：
+
+- `extension/content.js` 监听 Popup 消息并解析当前页面 DOM
+- `extension/popup.js` 打开时通过 `chrome.tabs.sendMessage` 获取解析结果
+- 自动填充 Job Title、Company、Salary、Location
+- Source 自动填充为 `Boss直聘`，用户仍可修改
+- 如果解析失败，返回空字段并保留手动填写能力
+- 保留 Email、Password、Save Job 和 Supabase 保存链路
+
+Boss 直聘 DOM 选择器：
+
+- Job Title：`.job-detail .job-name`、`.job-banner .job-name`、`.job-primary .name h1`、`.job-title .job-name`、`.job-name`、`h1`
+- Company：`.job-detail .company-name`、`.job-banner .company-name`、`.company-info .company-name`、`.company-info .name`、`.job-sec-company .name`、`.job-company .name`、`.company-card .name`
+- Salary：`.job-detail .job-salary`、`.job-banner .job-salary`、`.job-primary .salary`、`.job-salary`、`.salary`、`.red`
+- Location：`.job-address .location-address`、`.job-location`、`.job-primary .job-area`、`.job-area`、`.company-location`
+- Location fallback：`.job-primary .info-primary p`、`.job-banner .info-primary p`、`.job-detail .job-base-info`、`.job-detail .job-basic-info` 的首段城市信息
+
+本阶段明确不做：
+
+- AI 分析
+- JD 总结
+- 技能提取
+- 自动投递
+- 多网站解析
+- 重复链接提示
+
 ---
 
 ## 8. 认证方案
@@ -672,6 +712,7 @@ job-application-tracker/
 | Milestone 3A：Chrome Extension Foundation | Completed | Manifest V3、Popup 基础表单、当前标签页 URL 填充与 Content Script 基础文件已完成 |
 | Milestone 3B：Chrome Extension Save to Supabase | Completed | Extension 通过 Next.js API Route 认证并写入 Supabase `jobs` 表，默认 status 为 `saved` |
 | Milestone 3B.1：Location and Source Field Support | Completed | Extension Popup 和保存 API 已支持手动填写并保存 Location / Source；Dashboard Create 与 Job Card 已支持对应字段 |
+| Milestone 3C：Boss Job Auto Parsing | Completed | Boss 直聘职位详情页可通过 Content Script 自动解析 Job Title、Company、Salary、Location，并在 Popup 中自动填充 |
 | Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 

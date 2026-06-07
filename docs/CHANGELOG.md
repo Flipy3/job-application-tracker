@@ -90,14 +90,30 @@
 - 未新增第三方依赖
 - 未实现自动解析或自动识别来源网站
 
+### Milestone 3C Completed
+
+- Milestone 3C - Boss Job Auto Parsing 已完成
+- Chrome Extension `content.js` 新增 Boss 直聘职位详情页解析逻辑
+- Popup 打开时通过 `chrome.tabs.sendMessage` 与 Content Script 通信获取解析结果
+- 在 Boss 直聘职位详情页自动填充 Job Title、Company、Salary、Location
+- Source 在 Boss 直聘职位详情页自动填充为 `Boss直聘`，用户仍可手动修改
+- 解析失败时保持输入框为空，不阻断用户手动填写和保存
+- 保留 Email、Password、Save Job 与 Supabase 保存链路
+- 本阶段仅支持 Boss 直聘，未新增 LinkedIn、Seek、Indeed、猎聘、拉勾等多平台解析
+- 未新增 AI 分析、JD 总结、技能提取或自动投递功能
+- 未修改数据库 Schema
+- 未修改 Auth / RLS
+- 未新增第三方依赖
+
 ### Current Stable Version
 
-- `76517ab feat: save extension jobs to supabase`
+- `c09fcbe feat: support location and source in extension`
 
 ### Next Actions
 
-- 下一步计划：Milestone 3C / Milestone 4，根据 TECHNICAL_PLAN 逐步实现岗位页面读取、解析与保存。
+- 下一步计划：手动验收 Milestone 3C；验收通过后再进入重复链接提示或后续 Milestone。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
 - 注意：Milestone 3B.1 仅补齐手动填写 Location / Source 的创建、展示和 Extension 保存链路。
+- 注意：Milestone 3C 仅支持 Boss 直聘职位详情页自动解析与填表，未包含多平台解析、AI 功能或重复链接提示。
