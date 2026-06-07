@@ -39,11 +39,7 @@ async function fillParsedJobFields(activeTab) {
     const response = await sendMessageToTab(activeTab.id, {
       type: "PARSE_CURRENT_JOB"
     });
-    const data = response;
-
-    console.log("parsed data", data);
-
-    const job = data?.job;
+    const job = response?.job;
 
     if (!job) {
       return;

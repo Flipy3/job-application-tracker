@@ -1,5 +1,4 @@
 const BOSS_SOURCE_NAME = "Boss直聘";
-let bossParserDebug = createEmptyBossParserDebug();
 
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type !== "PARSE_CURRENT_JOB") {
@@ -8,8 +7,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   parseBossJobPageWithRetry().then((job) => {
     sendResponse({
-      job,
-      debug: bossParserDebug
+      job
     });
   });
 
@@ -17,8 +15,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 });
 
 async function parseBossJobPageWithRetry() {
-  bossParserDebug = createEmptyBossParserDebug();
-
   if (!isBossPage(window.location.href)) {
     return getEmptyJob();
   }
@@ -30,13 +26,6 @@ async function parseBossJobPageWithRetry() {
   for (let attempt = 1; attempt <= maxAttempts; attempt += 1) {
     const job = parseBossJobPage();
     bestJob = pickMoreCompleteJob(bestJob, job);
-
-    debugBossParsing("retry", {
-      attempt,
-      maxAttempts,
-      job,
-      bestJob
-    });
 
     if (isCompleteJob(bestJob)) {
       return bestJob;
@@ -71,11 +60,6 @@ function parseBossJobPage() {
 function parseBossSearchResultPanel() {
   const isSearchPage = isBossSearchResultsPage(window.location.href);
 
-  debugBossParsing("page-detected", {
-    isBossSearchPage: isSearchPage,
-    isBossStandaloneDetailPage: isBossJobDetailPage(window.location.href)
-  });
-
   if (!isSearchPage) {
     return getEmptyBossJob();
   }
@@ -90,13 +74,6 @@ function parseBossSearchResultPanel() {
   ]);
 
   if (!panel) {
-    debugBossParsing("search-panel", {
-      isSearchPage,
-      hasPanel: false,
-      hasSelectedCard: false,
-      job: getEmptyBossJob()
-    });
-
     return getEmptyBossJob();
   }
 
@@ -109,8 +86,6 @@ function parseBossSearchResultPanel() {
     ".job-title"
   ]);
   const sourceCard = findSourceJobCard(panel, panelTitle);
-  bossParserDebug.panelTextSample = getTextSample(panel.textContent);
-  bossParserDebug.selectedCardTextSample = getTextSample(sourceCard?.textContent);
 
   const title =
     panelTitle || findFirstTextIn(sourceCard, [
@@ -121,54 +96,46 @@ function parseBossSearchResultPanel() {
     ]);
   const company =
     findCompanyTextInPanel(panel) || findCompanyTextInCard(sourceCard);
-  const panelSalary = findSalaryTextIn(
-    panel,
-    [
-      ".job-detail-info .job-salary",
-      ".job-detail-header .job-salary",
-      ".job-header-info .job-salary",
-      ".job-detail-info .salary",
-      ".job-detail-header .salary",
-      ".job-header-info .salary",
-      ".job-detail-info .salary-info",
-      ".job-detail-header .salary-info",
-      ".job-header-info .salary-info",
-      ".job-detail-info .job-salary-info",
-      ".job-detail-header .job-salary-info",
-      ".job-header-info .job-salary-info",
-      ".job-detail-info .red",
-      ".job-detail-header .red",
-      ".job-header-info .red",
-      ".job-detail-info h1",
-      ".job-detail-header h1",
-      ".job-header-info h1",
-      ".job-detail-info",
-      ".job-detail-header",
-      ".job-header-info",
-      ".job-salary",
-      ".salary-info",
-      ".salary",
-      ".red"
-    ],
-    "panel"
-  );
-  const cardSalary = findSalaryTextIn(
-    sourceCard,
-    [
-      ".job-card-left .salary",
-      ".job-card-left .job-salary",
-      ".job-card-left .salary-info",
-      ".job-card-left .job-info .salary",
-      ".job-card-left .job-info .job-salary",
-      ".job-card-left .job-info",
-      ".job-card-left .job-title",
-      ".job-card-left",
-      ".salary",
-      ".job-salary",
-      ".salary-info"
-    ],
-    "selected-card"
-  );
+  const panelSalary = findSalaryTextIn(panel, [
+    ".job-detail-info .job-salary",
+    ".job-detail-header .job-salary",
+    ".job-header-info .job-salary",
+    ".job-detail-info .salary",
+    ".job-detail-header .salary",
+    ".job-header-info .salary",
+    ".job-detail-info .salary-info",
+    ".job-detail-header .salary-info",
+    ".job-header-info .salary-info",
+    ".job-detail-info .job-salary-info",
+    ".job-detail-header .job-salary-info",
+    ".job-header-info .job-salary-info",
+    ".job-detail-info .red",
+    ".job-detail-header .red",
+    ".job-header-info .red",
+    ".job-detail-info h1",
+    ".job-detail-header h1",
+    ".job-header-info h1",
+    ".job-detail-info",
+    ".job-detail-header",
+    ".job-header-info",
+    ".job-salary",
+    ".salary-info",
+    ".salary",
+    ".red"
+  ]);
+  const cardSalary = findSalaryTextIn(sourceCard, [
+    ".job-card-left .salary",
+    ".job-card-left .job-salary",
+    ".job-card-left .salary-info",
+    ".job-card-left .job-info .salary",
+    ".job-card-left .job-info .job-salary",
+    ".job-card-left .job-info",
+    ".job-card-left .job-title",
+    ".job-card-left",
+    ".salary",
+    ".job-salary",
+    ".salary-info"
+  ]);
   const salary = panelSalary || cardSalary;
   const location =
     extractLocationText(
@@ -196,22 +163,6 @@ function parseBossSearchResultPanel() {
     company,
     salary,
     location
-  });
-
-  debugBossParsing("search-panel", {
-    isSearchPage,
-    hasPanel: true,
-    hasSelectedCard: Boolean(sourceCard),
-    panelSelector: getElementSelectorSummary(panel),
-    selectedCardSelector: getElementSelectorSummary(sourceCard),
-    salarySource: panelSalary ? "panel" : cardSalary ? "selected-card" : "",
-    panelSalary,
-    cardSalary,
-    title: job.title,
-    company: job.company,
-    salary: job.salary,
-    location: job.location,
-    job
   });
 
   return job;
@@ -262,14 +213,6 @@ function parseBossStandaloneJobDetailPage() {
     company,
     salary,
     location
-  });
-
-  debugBossParsing("standalone-detail", {
-    title: job.title,
-    company: job.company,
-    salary: job.salary,
-    location: job.location,
-    job
   });
 
   return job;
@@ -576,7 +519,7 @@ function extractLocationText(text) {
   return firstSegment || "";
 }
 
-function findSalaryTextIn(root, selectors, debugSource = "") {
+function findSalaryTextIn(root, selectors) {
   if (!root) {
     return "";
   }
@@ -585,8 +528,6 @@ function findSalaryTextIn(root, selectors, debugSource = "") {
     const elements = Array.from(root.querySelectorAll(selector));
 
     for (const element of elements) {
-      recordSalaryNodeDebug(debugSource, selector, element);
-
       const salary = extractSalaryFromElement(element);
 
       if (salary) {
@@ -594,8 +535,6 @@ function findSalaryTextIn(root, selectors, debugSource = "") {
       }
     }
   }
-
-  recordSalaryNodeDebug(debugSource, "root-fallback", root);
 
   return extractSalaryFromElement(root);
 }
@@ -630,7 +569,7 @@ function extractSalaryFromText(text) {
     return "";
   }
 
-  for (const { pattern } of getSalaryPatterns()) {
+  for (const pattern of getSalaryPatterns()) {
     const match = normalizedText.match(pattern);
 
     if (match?.[0]) {
@@ -643,30 +582,12 @@ function extractSalaryFromText(text) {
 
 function getSalaryPatterns() {
   return [
-    {
-      name: "salary-negotiable-prefixed",
-      pattern: /薪资\s*面议/
-    },
-    {
-      name: "salary-negotiable",
-      pattern: /面议/
-    },
-    {
-      name: "k-range-with-both-units",
-      pattern: /\d+(?:\.\d+)?\s*K\s*-\s*\d+(?:\.\d+)?\s*K(?:\s*[·.]\s*\d+\s*薪)?/i
-    },
-    {
-      name: "k-range-with-trailing-unit",
-      pattern: /\d+(?:\.\d+)?\s*-\s*\d+(?:\.\d+)?\s*K(?:\s*[·.]\s*\d+\s*薪)?/i
-    },
-    {
-      name: "daily-yuan-range-with-slash",
-      pattern: /\d+(?:\.\d+)?\s*-\s*\d+(?:\.\d+)?\s*元\s*\/\s*(?:天|日)/
-    },
-    {
-      name: "daily-yuan-range-with-word",
-      pattern: /\d+(?:\.\d+)?\s*-\s*\d+(?:\.\d+)?\s*元\s*(?:每天|每日|天|日)/
-    }
+    /薪资\s*面议/,
+    /面议/,
+    /\d+(?:\.\d+)?\s*K\s*-\s*\d+(?:\.\d+)?\s*K(?:\s*[·.]\s*\d+\s*薪)?/i,
+    /\d+(?:\.\d+)?\s*-\s*\d+(?:\.\d+)?\s*K(?:\s*[·.]\s*\d+\s*薪)?/i,
+    /\d+(?:\.\d+)?\s*-\s*\d+(?:\.\d+)?\s*元\s*\/\s*(?:天|日)/,
+    /\d+(?:\.\d+)?\s*-\s*\d+(?:\.\d+)?\s*元\s*(?:每天|每日|天|日)/
   ];
 }
 
@@ -725,38 +646,10 @@ function hasParsedJobFields(job) {
 }
 
 function buildBossJob(job) {
-  console.log("raw salary before build", job.salary);
-  const salaryPrivateUseCheck = containsPrivateUseCharacters(job.salary);
-  const safeSalaryAfterBuild = getSafeSalaryText(job.salary);
-
-  console.log(
-    "salary private-use check",
-    job.salary,
-    salaryPrivateUseCheck
-  );
-
-  bossParserDebug.rawSalaryBeforeBuild = job.salary || "";
-  bossParserDebug.safeSalaryAfterBuild = safeSalaryAfterBuild;
-  bossParserDebug.salaryPrivateUseCheck = salaryPrivateUseCheck;
-  bossParserDebug.salaryRegexMatches = getSalaryRegexMatchesForDebug([
-    {
-      source: "rawSalaryBeforeBuild",
-      text: job.salary
-    },
-    {
-      source: "panelTextSample",
-      text: bossParserDebug.panelTextSample
-    },
-    {
-      source: "selectedCardTextSample",
-      text: bossParserDebug.selectedCardTextSample
-    }
-  ]);
-
   return {
     title: job.title || "",
     company: job.company || "",
-    salary: safeSalaryAfterBuild,
+    salary: getSafeSalaryText(job.salary),
     location: job.location || "",
     source: BOSS_SOURCE_NAME
   };
@@ -798,138 +691,6 @@ function wait(ms) {
   return new Promise((resolve) => {
     window.setTimeout(resolve, ms);
   });
-}
-
-function debugBossParsing(stage, details) {
-  if (!isBossPage(window.location.href)) {
-    return;
-  }
-
-  console.debug("[Job Tracker Boss Parser]", stage, {
-    isBossSearchPage: isBossSearchResultsPage(window.location.href),
-    ...details
-  });
-}
-
-function getElementSelectorSummary(element) {
-  if (!element) {
-    return "";
-  }
-
-  const className =
-    typeof element.className === "string" ? element.className.trim() : "";
-
-  return [element.tagName.toLowerCase(), className ? `.${className}` : ""].join(
-    ""
-  );
-}
-
-function getTextSample(text) {
-  return normalizeText(text).slice(0, 600);
-}
-
-function recordSalaryNodeDebug(source, selector, element) {
-  if (!source || !element || bossParserDebug.salaryCandidateNodes.length >= 20) {
-    return;
-  }
-
-  bossParserDebug.salaryCandidateNodes.push({
-    source,
-    selector,
-    tagName: element.tagName || "",
-    className: getClassNameForDebug(element),
-    textContent: getTextSample(element.textContent),
-    innerText: getTextSample(element.innerText),
-    outerHTML: getHtmlSample(element.outerHTML),
-    innerHTML: getHtmlSample(element.innerHTML),
-    title: element.getAttribute?.("title") || "",
-    ariaLabel: element.getAttribute?.("aria-label") || "",
-    dataset: getDatasetForDebug(element),
-    childNodes: getChildNodesForDebug(element)
-  });
-
-  if (!bossParserDebug.salaryNodeOuterHTML) {
-    bossParserDebug.salaryNodeOuterHTML = getHtmlSample(element.outerHTML);
-    bossParserDebug.salaryNodeInnerText = getTextSample(element.innerText);
-    bossParserDebug.salaryNodeTextContent = getTextSample(element.textContent);
-  }
-}
-
-function getClassNameForDebug(element) {
-  return typeof element.className === "string" ? element.className : "";
-}
-
-function getHtmlSample(html) {
-  return typeof html === "string" ? html.slice(0, 1200) : "";
-}
-
-function getDatasetForDebug(element) {
-  return element?.dataset ? { ...element.dataset } : {};
-}
-
-function getChildNodesForDebug(element) {
-  return Array.from(element.childNodes || [])
-    .slice(0, 20)
-    .map((node) => {
-      if (node.nodeType === 3) {
-        return {
-          nodeType: "text",
-          textContent: getTextSample(node.textContent)
-        };
-      }
-
-      return {
-        nodeType: "element",
-        tagName: node.tagName || "",
-        className: getClassNameForDebug(node),
-        textContent: getTextSample(node.textContent),
-        innerText: getTextSample(node.innerText),
-        title: node.getAttribute?.("title") || "",
-        dataset: getDatasetForDebug(node)
-      };
-    });
-}
-
-function getSalaryRegexMatchesForDebug(entries) {
-  return entries.flatMap((entry) => {
-    const normalizedText = normalizeText(entry.text)
-      .replace(/[－～—–]/g, "-")
-      .replace(/[Ｋｋ]/g, "K")
-      .replace(/[・•]/g, "·");
-
-    if (!normalizedText) {
-      return [];
-    }
-
-    return getSalaryPatterns()
-      .map(({ name, pattern }) => {
-        const match = normalizedText.match(pattern);
-
-        return match?.[0]
-          ? {
-              source: entry.source,
-              pattern: name,
-              match: normalizeSalaryText(match[0])
-            }
-          : null;
-      })
-      .filter(Boolean);
-  });
-}
-
-function createEmptyBossParserDebug() {
-  return {
-    rawSalaryBeforeBuild: "",
-    safeSalaryAfterBuild: "",
-    salaryPrivateUseCheck: false,
-    panelTextSample: "",
-    selectedCardTextSample: "",
-    salaryNodeOuterHTML: "",
-    salaryNodeInnerText: "",
-    salaryNodeTextContent: "",
-    salaryRegexMatches: [],
-    salaryCandidateNodes: []
-  };
 }
 
 function getEmptyBossJob() {
