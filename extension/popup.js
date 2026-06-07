@@ -1,4 +1,5 @@
 const API_BASE_URL = "http://localhost:3000";
+const DUPLICATE_JOB_URL_MESSAGE = "该岗位链接已保存";
 
 const jobForm = document.getElementById("job-form");
 const emailInput = document.getElementById("email");
@@ -172,6 +173,10 @@ jobForm.addEventListener("submit", async (event) => {
     });
 
     const result = await response.json();
+
+    if (response.status === 409) {
+      throw new Error(DUPLICATE_JOB_URL_MESSAGE);
+    }
 
     if (!response.ok) {
       throw new Error(result.error || "保存失败");

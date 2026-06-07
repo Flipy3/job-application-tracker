@@ -519,6 +519,32 @@ Boss 搜索结果页新增 DOM 选择器：
 
 ---
 
+### 7.9 Milestone 4A - Duplicate Job URL Detection
+
+目标：避免同一用户重复保存相同岗位链接，补齐 MVP 中“明显重复记录”检测能力。
+
+当前实现：
+
+- `POST /api/extension/jobs` 在用户认证成功后、插入 `jobs` 表前检查重复链接
+- 仅当请求中的 `url` 非空时执行重复检测
+- 重复检测规则：同一 `user_id` 下存在完全相同的 `job_url`
+- 如果检测到重复记录，API 返回 `409 Conflict`
+- 重复时不会插入新的 `jobs` 记录
+- Chrome Extension Popup 收到 `409` 后显示 `该岗位链接已保存`
+- 空 URL 保持现有行为，不做重复检测，仍允许保存
+
+本阶段明确不做：
+
+- 数据库 schema 修改
+- RLS policy 修改
+- Dashboard CRUD 修改
+- Boss 解析逻辑修改
+- 多平台解析
+- AI 功能
+- URL canonical 处理或 tracking query 参数清洗
+
+---
+
 ## 8. 认证方案
 
 ### 8.1 Web 登录
@@ -783,7 +809,8 @@ job-application-tracker/
 | Milestone 3C：Boss Job Auto Parsing | Completed | Boss 直聘职位详情页可通过 Content Script 自动解析 Job Title、Company、Salary、Location，并在 Popup 中自动填充 |
 | Milestone 3C.1：Boss Search Result Detail Panel Parsing | Completed | Boss 搜索结果页右侧详情面板可优先解析；字段不足时从关联左侧岗位卡片补齐 |
 | Milestone 3D：Extension Authentication UX | Completed | Popup 可通过 `chrome.storage.local` 本地恢复 Email / Password，并支持 Clear Credentials 清除本地凭据 |
-| Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |
+| Milestone 4A：Duplicate Job URL Detection | Completed | Extension 保存 API 已在插入前检查同一用户下相同 `job_url`；重复时返回 `409`，Popup 显示 `该岗位链接已保存` |
+| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存与 M4A 重复链接提示；后续继续按子 Milestone 推进 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 
 ---
@@ -848,20 +875,18 @@ MVP 完成后，可以考虑以下方向：
 
 当前最优先的下一步是：
 
-**开始 Milestone 0：项目初始化。**
+**手动验收 Milestone 4A：Duplicate Job URL Detection。**
 
 建议给 Codex 的下一条指令：
 
 ```text
-请阅读 docs/TECHNICAL_PLAN.md，并按照 Milestone 0 初始化项目。
+请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4A。
 要求：
-1. 创建 Next.js + TypeScript + Tailwind CSS Web 项目
-2. 创建基础目录结构
-3. 添加 Supabase 客户端配置文件
-4. 创建 .env.example
-5. 添加基础 README
-6. 不要实现业务功能
-7. 完成后更新 TECHNICAL_PLAN.md 中 Milestone 0 的任务状态
+1. 不提交 Git
+2. 按手动测试步骤验证重复 URL 保存
+3. 确认重复时 API 返回 409
+4. 确认 Popup 显示“该岗位链接已保存”
+5. 确认空 URL 仍允许保存
 ```
 
 

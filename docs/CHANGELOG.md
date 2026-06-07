@@ -139,13 +139,30 @@
 - 未新增 AI、更多招聘网站解析或 Boss salary 混淆处理
 - 未新增第三方依赖
 
+### Milestone 4A Completed
+
+- Milestone 4A - Duplicate Job URL Detection 已完成
+- `POST /api/extension/jobs` 在 Supabase Auth 认证成功后、写入 `jobs` 表前检查重复链接
+- 重复检测规则为同一用户下 `job_url` 完全相同
+- 当请求中的 URL 为空时，保持现有行为，不执行重复检测并允许保存
+- 检测到重复岗位链接时，API 返回 `409 Conflict`
+- 检测到重复岗位链接时，不会插入新的 `jobs` 记录
+- Chrome Extension Popup 收到 `409` 后显示 `该岗位链接已保存`
+- 成功保存新岗位后，仍保留原有本地 Email / Password 记住逻辑
+- 未修改 Supabase schema
+- 未修改 RLS policy
+- 未修改 Dashboard CRUD
+- 未修改 Boss 解析逻辑
+- 未新增多平台解析、AI 功能、URL canonical 处理或 query 参数清洗
+- 未新增第三方依赖
+
 ### Current Stable Version
 
 - `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 3D；验收通过后再提交 Git。
+- 下一步计划：手动验收 Milestone 4A；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
@@ -153,3 +170,4 @@
 - 注意：Milestone 3C 仅支持 Boss 直聘职位详情页自动解析与填表，未包含多平台解析、AI 功能或重复链接提示。
 - 注意：Milestone 3C.1 仅补充 Boss 搜索结果页右侧详情面板解析，不包含其他网站、AI、自动投递或保存链路变更。
 - 注意：Milestone 3D 仅优化 Extension Popup 凭据输入体验，不包含 OAuth、session sync、RLS、schema、Dashboard 或保存链路变更。
+- 注意：Milestone 4A 仅实现同一用户下完全相同 `job_url` 的重复保存提示，不包含 Dashboard CRUD、Boss 解析逻辑、schema、RLS、URL canonical 处理或多平台扩展。

@@ -53,6 +53,7 @@ export async function POST(request: Request) {
     const password = toTrimmedString(body.password);
     const title = toTrimmedString(body.title);
     const company = toTrimmedString(body.company);
+    const jobUrl = toNullableString(body.url);
 
     if (!email || !password) {
       return jsonResponse(
@@ -93,13 +94,30 @@ export async function POST(request: Request) {
       );
     }
 
+    if (jobUrl) {
+      const { data: existingJobs, error: duplicateCheckError } = await supabase
+        .from("jobs")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("job_url", jobUrl)
+        .limit(1);
+
+      if (duplicateCheckError) {
+        return jsonResponse({ error: duplicateCheckError.message }, 500, origin);
+      }
+
+      if (existingJobs && existingJobs.length > 0) {
+        return jsonResponse({ error: "该岗位链接已保存" }, 409, origin);
+      }
+    }
+
     const { data, error: insertError } = await supabase
       .from("jobs")
       .insert({
         user_id: user.id,
         company_name: company,
         job_title: title,
-        job_url: toNullableString(body.url),
+        job_url: jobUrl,
         salary: toNullableString(body.salary),
         location: toNullableString(body.location),
         notes: toNullableString(body.notes),
