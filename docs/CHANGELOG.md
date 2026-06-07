@@ -122,16 +122,34 @@
 - 未修改 Auth / RLS / Schema
 - 未新增第三方依赖
 
+### Milestone 3D Completed
+
+- Milestone 3D - Extension Authentication UX 已完成
+- `extension/manifest.json` 新增 `storage` permission，用于访问 `chrome.storage.local`
+- Popup 打开时会读取本地保存的 `email` / `password` 并自动填入输入框
+- Save Job 成功写入 Supabase 后，会将当前 Email / Password 保存到 `chrome.storage.local`
+- Popup 新增 Clear Credentials 按钮
+- Clear Credentials 会清除本地保存的 `email` / `password`，并清空 Popup 中的 Email / Password 输入框
+- Clear Credentials 成功后显示 `凭据已清除`
+- 保存状态提示继续保留 `Saving...`、`Saved successfully`、失败错误提示
+- 已在代码与技术计划中注明：`chrome.storage.local` 保存密码仅用于本地 MVP 测试，后续应替换为更安全的 session、token 或 OAuth 方案
+- 未修改 Supabase 写入链路，仍为 Chrome Extension Popup → Next.js API Route → Supabase Auth → Supabase `jobs`
+- 未实现 Google OAuth、Supabase session sync、service_role、关闭 RLS 或数据库 schema 修改
+- 未修改 Dashboard CRUD
+- 未新增 AI、更多招聘网站解析或 Boss salary 混淆处理
+- 未新增第三方依赖
+
 ### Current Stable Version
 
-- `c09fcbe feat: support location and source in extension`
+- `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 3C.1；验收通过后再进入重复链接提示或后续 Milestone。
+- 下一步计划：手动验收 Milestone 3D；验收通过后再提交 Git。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
 - 注意：Milestone 3B.1 仅补齐手动填写 Location / Source 的创建、展示和 Extension 保存链路。
 - 注意：Milestone 3C 仅支持 Boss 直聘职位详情页自动解析与填表，未包含多平台解析、AI 功能或重复链接提示。
 - 注意：Milestone 3C.1 仅补充 Boss 搜索结果页右侧详情面板解析，不包含其他网站、AI、自动投递或保存链路变更。
+- 注意：Milestone 3D 仅优化 Extension Popup 凭据输入体验，不包含 OAuth、session sync、RLS、schema、Dashboard 或保存链路变更。

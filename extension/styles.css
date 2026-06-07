@@ -90,6 +90,24 @@ textarea:focus {
   cursor: not-allowed;
 }
 
+.secondary-button {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #334155;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  padding: 10px 12px;
+}
+
+.secondary-button:hover {
+  background: #f1f5f9;
+}
+
 .save-status {
   min-height: 18px;
   margin: 0;

@@ -11,7 +11,63 @@ const sourceInput = document.getElementById("source");
 const urlInput = document.getElementById("job-url");
 const notesInput = document.getElementById("notes");
 const saveButton = document.getElementById("save-button");
+const clearCredentialsButton = document.getElementById("clear-credentials-button");
 const saveStatus = document.getElementById("save-status");
+
+const STORED_CREDENTIAL_KEYS = ["email", "password"];
+
+function getLocalStorageArea() {
+  if (typeof chrome === "undefined" || !chrome.storage?.local) {
+    return null;
+  }
+
+  return chrome.storage.local;
+}
+
+function getStoredCredentials() {
+  const storage = getLocalStorageArea();
+
+  if (!storage) {
+    return Promise.resolve({});
+  }
+
+  return new Promise((resolve) => {
+    storage.get(STORED_CREDENTIAL_KEYS, (credentials) => {
+      resolve(credentials ?? {});
+    });
+  });
+}
+
+function saveCredentials(credentials) {
+  const storage = getLocalStorageArea();
+
+  if (!storage) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    storage.set(credentials, resolve);
+  });
+}
+
+function clearStoredCredentials() {
+  const storage = getLocalStorageArea();
+
+  if (!storage) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    storage.remove(STORED_CREDENTIAL_KEYS, resolve);
+  });
+}
+
+async function fillStoredCredentials() {
+  const credentials = await getStoredCredentials();
+
+  fillInputIfValue(emailInput, credentials.email);
+  fillInputIfValue(passwordInput, credentials.password);
+}
 
 async function fillCurrentTabUrl() {
   if (typeof chrome === "undefined" || !chrome.tabs?.query) {
@@ -83,6 +139,7 @@ function fillInputIfValue(input, value) {
 }
 
 async function initializePopup() {
+  await fillStoredCredentials();
   const activeTab = await fillCurrentTabUrl();
   await fillParsedJobFields(activeTab);
 }
@@ -103,7 +160,7 @@ jobForm.addEventListener("submit", async (event) => {
     status: "saved"
   };
 
-  setSaveState("Saving...", true, "saving");
+  setSaveState("保存中...", true, "saving");
 
   try {
     const response = await fetch(`${API_BASE_URL}/api/extension/jobs`, {
@@ -117,24 +174,38 @@ jobForm.addEventListener("submit", async (event) => {
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error || "Failed to save job.");
+      throw new Error(result.error || "保存失败");
     }
 
-    setSaveState("Saved successfully", false, "success");
+    // MVP only: chrome.storage.local stores the password locally for testing convenience.
+    // Replace this with a safer session, token, or OAuth flow before production use.
+    await saveCredentials({
+      email: jobData.email,
+      password: jobData.password
+    });
+
+    setSaveState("保存成功", false, "success");
   } catch (error) {
     setSaveState(
-      error instanceof Error ? error.message : "Failed to save job",
+      error instanceof Error ? error.message : "保存失败",
       false,
       "error"
     );
   }
 });
 
+clearCredentialsButton.addEventListener("click", async () => {
+  await clearStoredCredentials();
+  emailInput.value = "";
+  passwordInput.value = "";
+  setSaveState("已清除登录信息", false, "success");
+});
+
 document.addEventListener("DOMContentLoaded", initializePopup);
 
 function setSaveState(message, isSaving, state) {
   saveButton.disabled = isSaving;
-  saveButton.textContent = isSaving ? "Saving..." : "Save Job";
+  saveButton.textContent = isSaving ? "保存中..." : "保存岗位";
   saveStatus.textContent = message;
   saveStatus.dataset.state = state;
 }

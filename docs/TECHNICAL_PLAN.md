@@ -484,6 +484,39 @@ Boss 搜索结果页新增 DOM 选择器：
 - 多网站解析
 - Supabase 保存链路变更
 
+### 7.8 Milestone 3D - Extension Authentication UX
+
+目标：优化 Chrome Extension Popup 的登录体验，避免用户每次保存岗位都重复手动输入 Email / Password。
+
+当前实现：
+
+- `extension/manifest.json` 增加 `storage` permission
+- Popup 打开时从 `chrome.storage.local` 读取 `email` 和 `password`
+- 如果本地已保存凭据，自动填充 Email / Password 输入框
+- 点击 Save Job 且 Next.js API Route 保存成功后，将当前 Email / Password 保存到 `chrome.storage.local`
+- Popup 新增 Clear Credentials 按钮
+- 点击 Clear Credentials 后清除 `chrome.storage.local` 中保存的 `email` / `password`，并清空 Popup 输入框
+- Clear Credentials 成功后显示 `凭据已清除`
+- 保存状态提示继续支持 `Saving...`、`Saved successfully`、`Failed to save job`
+- Supabase 写入链路保持不变：Chrome Extension Popup → Next.js API Route → Supabase Auth → Supabase `jobs`
+
+安全说明：
+
+- `chrome.storage.local` 保存密码仅用于本地 MVP 测试便利
+- 后续生产版本应替换为更安全的 session、token 或 OAuth 方案
+
+本阶段明确不做：
+
+- Google OAuth
+- Supabase session sync
+- service_role
+- 关闭 RLS
+- 数据库 schema 修改
+- Dashboard CRUD 修改
+- AI 功能
+- 更多招聘网站解析
+- Boss salary 字体混淆重新研究
+
 ---
 
 ## 8. 认证方案
@@ -749,6 +782,7 @@ job-application-tracker/
 | Milestone 3B.1：Location and Source Field Support | Completed | Extension Popup 和保存 API 已支持手动填写并保存 Location / Source；Dashboard Create 与 Job Card 已支持对应字段 |
 | Milestone 3C：Boss Job Auto Parsing | Completed | Boss 直聘职位详情页可通过 Content Script 自动解析 Job Title、Company、Salary、Location，并在 Popup 中自动填充 |
 | Milestone 3C.1：Boss Search Result Detail Panel Parsing | Completed | Boss 搜索结果页右侧详情面板可优先解析；字段不足时从关联左侧岗位卡片补齐 |
+| Milestone 3D：Extension Authentication UX | Completed | Popup 可通过 `chrome.storage.local` 本地恢复 Email / Password，并支持 Clear Credentials 清除本地凭据 |
 | Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 
