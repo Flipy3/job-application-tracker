@@ -177,7 +177,7 @@ Next.js Web Dashboard
 
 ## 5. 数据库设计
 
-### 5.1 表：`job_applications`
+### 5.1 表：`jobs`
 
 用于存储用户的求职记录。
 
@@ -185,16 +185,14 @@ Next.js Web Dashboard
 |---|---|---:|---|
 | id | uuid | 是 | 主键，默认生成 |
 | user_id | uuid | 是 | 关联 Supabase Auth 用户 |
-| job_title | text | 是 | 岗位名称 |
 | company_name | text | 是 | 公司名称 |
-| platform | text | 否 | 来源平台，例如 boss, liepin, zhaopin |
+| job_title | text | 是 | 岗位名称 |
 | job_url | text | 否 | 岗位链接 |
-| city | text | 否 | 工作城市 |
-| salary_text | text | 否 | 薪资文本，例如 10-15K |
-| job_description | text | 否 | 岗位描述 |
+| salary | text | 否 | 薪资文本，例如 10-15K |
+| location | text | 否 | 工作城市 |
 | status | text | 是 | 当前状态 |
 | notes | text | 否 | 用户备注 |
-| applied_at | timestamptz | 否 | 投递时间 |
+| source | text | 否 | 来源平台，例如 boss, liepin, zhaopin |
 | created_at | timestamptz | 是 | 创建时间 |
 | updated_at | timestamptz | 是 | 更新时间 |
 
@@ -237,40 +235,38 @@ Next.js Web Dashboard
 示意 SQL：
 
 ```sql
-create table job_applications (
+create table jobs (
   id uuid primary key default gen_random_uuid(),
   user_id uuid not null references auth.users(id) on delete cascade,
-  job_title text not null,
   company_name text not null,
-  platform text,
+  job_title text not null,
   job_url text,
-  city text,
-  salary_text text,
-  job_description text,
+  salary text,
+  location text,
   status text not null default 'saved',
   notes text,
-  applied_at timestamptz,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  source text,
+  created_at timestamptz default now(),
+  updated_at timestamptz default now()
 );
 
-alter table job_applications enable row level security;
+alter table jobs enable row level security;
 
-create policy "Users can view own job applications"
-on job_applications for select
+create policy "Users can view own jobs"
+on jobs for select
 using (auth.uid() = user_id);
 
-create policy "Users can insert own job applications"
-on job_applications for insert
+create policy "Users can insert own jobs"
+on jobs for insert
 with check (auth.uid() = user_id);
 
-create policy "Users can update own job applications"
-on job_applications for update
+create policy "Users can update own jobs"
+on jobs for update
 using (auth.uid() = user_id)
 with check (auth.uid() = user_id);
 
-create policy "Users can delete own job applications"
-on job_applications for delete
+create policy "Users can delete own jobs"
+on jobs for delete
 using (auth.uid() = user_id);
 ```
 
@@ -668,8 +664,8 @@ job-application-tracker/
 
 | Milestone | 状态 | 说明 |
 |---|---|---|
-| Milestone 0：项目初始化 | Not Started | 待开始 |
-| Milestone 1：数据库与认证 | Not Started | 待开始 |
+| Milestone 0：项目初始化 | Completed | Next.js + TypeScript + Tailwind CSS + ESLint 基础骨架已完成 |
+| Milestone 1：数据库与认证 | Completed | Supabase client、Auth 基础页面、jobs schema 与 RLS 策略已完成 |
 | Milestone 2：Web Dashboard CRUD | Not Started | 待开始 |
 | Milestone 3：Chrome 插件基础版 | Not Started | 待开始 |
 | Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |

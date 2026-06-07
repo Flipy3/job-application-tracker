@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Job Application Tracker",
-  description: "Project foundation for Job Application Tracker.",
+  description: "Supabase auth foundation for Job Application Tracker.",
 };
 
 export default function RootLayout({
