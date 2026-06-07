@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Job Application Tracker",
+  "version": "0.1.0",
+  "description": "Chrome extension foundation for saving job application notes.",
+  "action": {
+    "default_title": "Job Application Tracker",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["activeTab"],
+  "content_scripts": [
+    {
+      "matches": ["http://*/*", "https://*/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

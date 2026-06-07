@@ -666,7 +666,9 @@ job-application-tracker/
 |---|---|---|
 | Milestone 0：项目初始化 | Completed | Next.js + TypeScript + Tailwind CSS + ESLint 基础骨架已完成 |
 | Milestone 1：数据库与认证 | Completed | Supabase client、Auth 基础页面、jobs schema 与 RLS 策略已完成 |
-| Milestone 2：Web Dashboard CRUD | Not Started | 待开始 |
+| Milestone 2A：Create / Read Jobs | Completed | Dashboard、Create Job、Read Jobs、Supabase `jobs` 表读写与路由保护已完成 |
+| Milestone 2B：Update / Delete Jobs | Completed | Job Status 更新、删除确认、删除记录与 Dashboard CRUD 闭环已完成 |
+| Milestone 2C：Dashboard Polish | Completed | 统计卡片、状态徽章、卡片式列表、Empty State 与 Dashboard 布局优化已完成 |
 | Milestone 3：Chrome 插件基础版 | Not Started | 待开始 |
 | Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |

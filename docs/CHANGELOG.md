@@ -43,11 +43,26 @@
 - 未修改 Auth 核心逻辑
 - 未引入新的 UI 库
 
+### Milestone 3A Completed
+
+- 新增 Chrome Extension 基础目录文件：`manifest.json`、`popup.html`、`popup.js`、`content.js`、`styles.css`
+- 配置 Manifest V3
+- Popup 页面包含 Job Title、Company、Job URL、Notes 和 Save Job Button
+- 打开 Popup 时自动读取当前标签页 URL，并填入 Job URL
+- Save Job Button 当前仅通过 `console.log` 打印 title、company、url、notes
+- `content.js` 仅作为后续页面读取逻辑的基础文件，当前不实现 JD 解析
+- 未连接 Supabase
+- 未修改数据库 Schema
+- 未修改 Auth 核心逻辑
+- 未修改已有 Dashboard CRUD 功能
+- 未新增第三方依赖
+
 ### Current Stable Version
 
-- `37d3d09 feat: add dashboard update and delete`
+- `879d790 style: polish dashboard UI`
 
 ### Next Actions
 
-- 下一步计划：Milestone 3。
+- 下一步计划：Milestone 3B / Milestone 4，根据 TECHNICAL_PLAN 逐步实现岗位页面读取、解析与保存。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
+- 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。

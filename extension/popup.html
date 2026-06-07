@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Job Application Tracker</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="popup">
+      <header class="popup__header">
+        <h1>Save Job</h1>
+      </header>
+
+      <form id="job-form" class="job-form">
+        <label class="field">
+          <span>Job Title</span>
+          <input id="job-title" name="title" type="text" autocomplete="off" />
+        </label>
+
+        <label class="field">
+          <span>Company</span>
+          <input id="company" name="company" type="text" autocomplete="off" />
+        </label>
+
+        <label class="field">
+          <span>Job URL</span>
+          <input id="job-url" name="url" type="url" autocomplete="off" />
+        </label>
+
+        <label class="field">
+          <span>Notes</span>
+          <textarea id="notes" name="notes" rows="4"></textarea>
+        </label>
+
+        <button type="submit" class="save-button">Save Job</button>
+      </form>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
