@@ -44,15 +44,15 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
       onSubmit={handleSubmit}
     >
       <div>
-        <h2 className="text-lg font-semibold tracking-normal">Add job</h2>
+        <h2 className="text-lg font-semibold tracking-normal">新增岗位</h2>
         <p className="mt-1 text-sm text-zinc-600">
-          Create a manual job record for the current account.
+          为当前账户手动创建一条岗位记录。
         </p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Job title</span>
+          <span className="text-sm font-medium">岗位名称</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="job_title"
@@ -63,7 +63,7 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
         </label>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Company</span>
+          <span className="text-sm font-medium">公司名称</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="company_name"
@@ -76,7 +76,7 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
         </label>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Location</span>
+          <span className="text-sm font-medium">工作地点</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="location"
@@ -86,7 +86,7 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
         </label>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Salary</span>
+          <span className="text-sm font-medium">薪资</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="salary"
@@ -96,18 +96,18 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
         </label>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Source</span>
+          <span className="text-sm font-medium">来源</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="source"
             onChange={(event) => updateField("source", event.target.value)}
-            placeholder="Boss直聘, LinkedIn, Seek, 公司官网"
+            placeholder="Boss直聘、LinkedIn、Seek、公司官网"
             value={formState.source}
           />
         </label>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium">Job URL</span>
+          <span className="text-sm font-medium">岗位链接</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="job_url"
@@ -119,7 +119,7 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
       </div>
 
       <label className="block space-y-2">
-        <span className="text-sm font-medium">Notes</span>
+        <span className="text-sm font-medium">备注</span>
         <textarea
           className="min-h-24 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
           name="notes"
@@ -133,7 +133,7 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
         disabled={isSubmitting}
         type="submit"
       >
-        {isSubmitting ? "Saving..." : "Save job"}
+        {isSubmitting ? "保存中..." : "保存岗位"}
       </button>
     </form>
   );

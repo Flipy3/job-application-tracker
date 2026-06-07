@@ -1,10 +1,10 @@
 {
   "manifest_version": 3,
-  "name": "Job Application Tracker",
+  "name": "求职进度追踪器",
   "version": "0.1.0",
-  "description": "Chrome extension foundation for saving job application notes.",
+  "description": "用于保存求职岗位记录的浏览器扩展。",
   "action": {
-    "default_title": "Job Application Tracker",
+    "default_title": "求职进度追踪器",
     "default_popup": "popup.html"
   },
   "permissions": ["activeTab", "storage"],

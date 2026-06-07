@@ -368,6 +368,34 @@ MVP 筛选：
 - 服务端搜索或数据库查询过滤
 - 第三方依赖引入
 
+### 6.6 Milestone 4C - Dashboard Localization (ZH-CN)
+
+目标：将 Web App 与 Chrome Extension 中的用户可见英文文案统一替换为简体中文，减少中英混搭，提升中文用户的使用一致性。
+
+当前实现：
+
+- Landing Page、Login Page、Logout Page、Dashboard 页面用户可见文案已统一为简体中文
+- Dashboard 顶部统计卡片显示为：岗位总数、已收藏、已投递、面试中、已获得 Offer、已拒绝
+- Job Form 字段显示为：岗位名称、公司名称、薪资、工作地点、来源、岗位链接、备注
+- Jobs List、Job Card、Search / Status Filter、Empty State、状态更新、删除确认和操作按钮文案已本地化
+- Dashboard 状态内部值继续保持 `saved`、`applied`、`interview`、`offer`、`rejected`，仅 UI label 显示为中文
+- 日期显示 locale 调整为 `zh-CN`
+- Web Auth 和 Dashboard 中来自 Supabase 或运行时的英文错误，在 UI 显示层增加中文兜底提示
+- Chrome Extension Popup 的标题、字段、placeholder、manifest 展示名称和保存失败兜底提示已本地化
+- 已保留已完成的中文文案，例如 `保存岗位`、`保存中...`、`保存成功`、`已清除登录信息`、`该岗位链接已保存`
+
+本阶段明确不做：
+
+- TypeScript 类型修改
+- 状态枚举值修改
+- 数据库字段修改
+- Supabase schema 修改
+- RLS / Auth 修改
+- API Route 保存链路修改
+- 文件名、URL 或路由名称修改
+- 新增依赖
+- 组件重构或业务逻辑重构
+
 ---
 
 ## 7. 浏览器插件设计
@@ -524,7 +552,7 @@ Boss 搜索结果页新增 DOM 选择器：
 - Popup 新增 Clear Credentials 按钮
 - 点击 Clear Credentials 后清除 `chrome.storage.local` 中保存的 `email` / `password`，并清空 Popup 输入框
 - Clear Credentials 成功后显示 `凭据已清除`
-- 保存状态提示继续支持 `Saving...`、`Saved successfully`、`Failed to save job`
+- 保存状态提示继续支持 `保存中...`、`保存成功`、`保存失败，请稍后重试`
 - Supabase 写入链路保持不变：Chrome Extension Popup → Next.js API Route → Supabase Auth → Supabase `jobs`
 
 安全说明：
@@ -838,7 +866,8 @@ job-application-tracker/
 | Milestone 3D：Extension Authentication UX | Completed | Popup 可通过 `chrome.storage.local` 本地恢复 Email / Password，并支持 Clear Credentials 清除本地凭据 |
 | Milestone 4A：Duplicate Job URL Detection | Completed | Extension 保存 API 已在插入前检查同一用户下相同 `job_url`；重复时返回 `409`，Popup 显示 `该岗位链接已保存` |
 | Milestone 4B：Dashboard Search and Filter | Completed | Dashboard Jobs List 已支持按关键词实时搜索，并支持 All / Saved / Applied / Interview / Offer / Rejected 状态筛选 |
-| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存、M4A 重复链接提示与 M4B Dashboard 搜索筛选；后续继续按子 Milestone 推进 |
+| Milestone 4C：Dashboard Localization (ZH-CN) | Completed | Web App 与 Chrome Extension 用户可见文案已统一为简体中文，状态内部枚举值保持不变 |
+| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存、M4A 重复链接提示、M4B Dashboard 搜索筛选与 M4C 简体中文本地化；后续继续按子 Milestone 推进 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 
 ---
@@ -903,18 +932,18 @@ MVP 完成后，可以考虑以下方向：
 
 当前最优先的下一步是：
 
-**手动验收 Milestone 4B：Dashboard Search and Filter。**
+**手动验收 Milestone 4C：Dashboard Localization (ZH-CN)。**
 
 建议给 Codex 的下一条指令：
 
 ```text
-请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4B。
+请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4C。
 要求：
 1. 不提交 Git
-2. 按手动测试步骤验证 Dashboard 搜索
-3. 确认 Status Filter 默认 All，并可按状态筛选
-4. 确认 Search 和 Status Filter 组合生效
-5. 确认无匹配结果时显示“No matching jobs found”
+2. 检查 Web App 页面用户可见文案是否为简体中文
+3. 确认 Dashboard 状态显示为已收藏、已投递、面试中、已获得 Offer、已拒绝
+4. 确认 Search / Filter UI 已显示为搜索、状态、全部等中文文案
+5. 确认 Chrome Extension Popup 不再残留用户可见英文文案
 ```
 
 

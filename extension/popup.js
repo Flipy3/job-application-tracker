@@ -179,7 +179,7 @@ jobForm.addEventListener("submit", async (event) => {
     }
 
     if (!response.ok) {
-      throw new Error(result.error || "保存失败");
+      throw new Error(getSaveErrorMessage(result.error));
     }
 
     // MVP only: chrome.storage.local stores the password locally for testing convenience.
@@ -192,7 +192,7 @@ jobForm.addEventListener("submit", async (event) => {
     setSaveState("保存成功", false, "success");
   } catch (error) {
     setSaveState(
-      error instanceof Error ? error.message : "保存失败",
+      error instanceof Error ? getSaveErrorMessage(error.message) : "保存失败",
       false,
       "error"
     );
@@ -213,4 +213,36 @@ function setSaveState(message, isSaving, state) {
   saveButton.textContent = isSaving ? "保存中..." : "保存岗位";
   saveStatus.textContent = message;
   saveStatus.dataset.state = state;
+}
+
+function getSaveErrorMessage(message) {
+  if (typeof message !== "string" || !message.trim()) {
+    return "保存失败，请稍后重试";
+  }
+
+  const trimmedMessage = message.trim();
+
+  if (/[\u4e00-\u9fff]/.test(trimmedMessage)) {
+    return trimmedMessage;
+  }
+
+  const normalizedMessage = trimmedMessage.toLowerCase();
+
+  if (normalizedMessage.includes("email and password")) {
+    return "请输入邮箱和密码";
+  }
+
+  if (normalizedMessage.includes("job title and company")) {
+    return "请输入岗位名称和公司名称";
+  }
+
+  if (normalizedMessage.includes("invalid login credentials")) {
+    return "邮箱或密码不正确";
+  }
+
+  if (normalizedMessage.includes("failed to fetch")) {
+    return "网络请求失败，请检查网页端是否已启动";
+  }
+
+  return "保存失败，请稍后重试";
 }

@@ -59,8 +59,8 @@ export function JobDashboard() {
         if (isMounted) {
           setError(
             dashboardError instanceof Error
-              ? dashboardError.message
-              : "Unable to load dashboard.",
+              ? getDashboardErrorMessage(dashboardError.message, "无法加载求职看板。")
+              : "无法加载求职看板。",
           );
         }
       } finally {
@@ -112,13 +112,13 @@ export function JobDashboard() {
       }
 
       setJobs((currentJobs) => [data as Job, ...currentJobs]);
-      setMessage("Job saved.");
+      setMessage("岗位已保存。");
       return true;
     } catch (createError) {
       setError(
         createError instanceof Error
-          ? createError.message
-          : "Unable to save job.",
+          ? getDashboardErrorMessage(createError.message, "无法保存岗位。")
+          : "无法保存岗位。",
       );
       return false;
     } finally {
@@ -161,12 +161,12 @@ export function JobDashboard() {
           currentJob.id === job.id ? (data as Job) : currentJob,
         ),
       );
-      setMessage("Job status updated.");
+      setMessage("岗位状态已更新。");
     } catch (updateError) {
       setError(
         updateError instanceof Error
-          ? updateError.message
-          : "Unable to update job status.",
+          ? getDashboardErrorMessage(updateError.message, "无法更新岗位状态。")
+          : "无法更新岗位状态。",
       );
     } finally {
       setUpdatingJobId(null);
@@ -180,7 +180,7 @@ export function JobDashboard() {
     }
 
     const shouldDelete = window.confirm(
-      `Delete ${job.job_title} at ${job.company_name}?`,
+      `确定删除「${job.job_title}」@「${job.company_name}」吗？`,
     );
 
     if (!shouldDelete) {
@@ -206,12 +206,12 @@ export function JobDashboard() {
       setJobs((currentJobs) =>
         currentJobs.filter((currentJob) => currentJob.id !== job.id),
       );
-      setMessage("Job deleted.");
+      setMessage("岗位已删除。");
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
-          ? deleteError.message
-          : "Unable to delete job.",
+          ? getDashboardErrorMessage(deleteError.message, "无法删除岗位。")
+          : "无法删除岗位。",
       );
     } finally {
       setDeletingJobId(null);
@@ -225,13 +225,12 @@ export function JobDashboard() {
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <header className="flex flex-col gap-4 border-b border-zinc-200 pb-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-medium text-zinc-500">Milestone 2C</p>
+            <p className="text-sm font-medium text-zinc-500">里程碑 2C</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal">
-              Dashboard
+              求职看板
             </h1>
             <p className="mt-2 text-sm text-zinc-600">
-              Track job opportunities, application progress, and follow-up
-              notes in one place.
+              在一个地方管理岗位机会、投递进度和跟进备注。
             </p>
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -239,7 +238,7 @@ export function JobDashboard() {
               <span className="text-zinc-600">{user.email}</span>
             ) : null}
             <Link className="font-medium underline" href="/logout">
-              Log out
+              退出登录
             </Link>
           </div>
         </header>
@@ -258,7 +257,7 @@ export function JobDashboard() {
 
         {isLoading ? (
           <section className="rounded-lg border border-zinc-200 bg-white p-8 text-sm text-zinc-600">
-            Loading dashboard...
+            正在加载求职看板...
           </section>
         ) : (
           <>
@@ -300,12 +299,20 @@ function toNullable(value: string) {
   return trimmedValue.length > 0 ? trimmedValue : null;
 }
 
+function getDashboardErrorMessage(message: string, fallback: string) {
+  if (/[\u4e00-\u9fff]/.test(message)) {
+    return message;
+  }
+
+  return fallback;
+}
+
 const statusLabels: Record<JobStatus, string> = {
-  saved: "Saved",
-  applied: "Applied",
-  interview: "Interview",
-  offer: "Offer",
-  rejected: "Rejected",
+  saved: "已收藏",
+  applied: "已投递",
+  interview: "面试中",
+  offer: "已获得 Offer",
+  rejected: "已拒绝",
 };
 
 function getDashboardStats(jobs: Job[]) {
@@ -329,7 +336,7 @@ function getDashboardStats(jobs: Job[]) {
 
   return [
     {
-      label: "Total Jobs",
+      label: "岗位总数",
       value: jobs.length,
     },
     ...JOB_STATUSES.map((status) => ({

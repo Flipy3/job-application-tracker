@@ -178,13 +178,28 @@
 - 未修改 Boss 解析逻辑
 - 未新增第三方依赖
 
+### Milestone 4C Completed
+
+- Milestone 4C - Dashboard Localization (ZH-CN) 已完成
+- Web App 用户可见英文文案已统一替换为简体中文
+- Landing Page、Login Page、Logout Page、Dashboard、Job Form、Job Cards、Search / Filter UI、Empty State、状态消息与错误兜底提示已本地化
+- Dashboard 统计卡片显示为岗位总数、已收藏、已投递、面试中、已获得 Offer、已拒绝
+- 状态内部值继续保持 `saved`、`applied`、`interview`、`offer`、`rejected`，仅 UI 显示改为中文
+- Dashboard 日期显示 locale 调整为 `zh-CN`
+- Chrome Extension Popup 的标题、字段名、placeholder、manifest 展示名称和保存失败兜底提示已本地化
+- 已保留现有中文扩展文案，例如 `保存岗位`、`保存中...`、`保存成功`、`已清除登录信息`、`该岗位链接已保存`
+- 未修改 TypeScript 类型、变量名、枚举值、数据库字段、文件名、URL 或路由名称
+- 未修改 Supabase schema、RLS policy、Auth 核心逻辑或 API Route 保存链路
+- 未新增第三方依赖
+- 未提交 Git，等待用户验收
+
 ### Current Stable Version
 
 - `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 4B；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
+- 下一步计划：手动验收 Milestone 4C；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
@@ -194,3 +209,4 @@
 - 注意：Milestone 3D 仅优化 Extension Popup 凭据输入体验，不包含 OAuth、session sync、RLS、schema、Dashboard 或保存链路变更。
 - 注意：Milestone 4A 仅实现同一用户下完全相同 `job_url` 的重复保存提示，不包含 Dashboard CRUD、Boss 解析逻辑、schema、RLS、URL canonical 处理或多平台扩展。
 - 注意：Milestone 4B 仅实现 Dashboard client-side 搜索和状态筛选，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端搜索或第三方依赖。
+- 注意：Milestone 4C 仅实现用户可见文案简体中文本地化，不包含业务逻辑、schema、Auth、API Route 保存链路、枚举值、路由或文件名修改。

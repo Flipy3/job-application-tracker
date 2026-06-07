@@ -36,7 +36,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       const { error: authError } = await authAction;
 
       if (authError) {
-        setError(authError.message);
+        setError(getAuthErrorMessage(authError.message));
       } else {
         if (!isSignup) {
           setIsSubmitting(false);
@@ -45,14 +45,14 @@ export function AuthForm({ mode }: AuthFormProps) {
         }
 
         setMessage(
-          "Signup submitted. Check your email if confirmation is enabled.",
+          "注册已提交。如已开启邮箱确认，请查看你的邮箱。",
         );
       }
     } catch (authError) {
       setError(
         authError instanceof Error
-          ? authError.message
-          : "Unable to complete auth request.",
+          ? getAuthErrorMessage(authError.message)
+          : "无法完成认证请求。",
       );
     }
 
@@ -64,18 +64,18 @@ export function AuthForm({ mode }: AuthFormProps) {
     <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
       <section className="w-full max-w-md space-y-8 rounded-lg border border-zinc-200 bg-white p-8">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-zinc-500">Milestone 2B</p>
+          <p className="text-sm font-medium text-zinc-500">里程碑 2B</p>
           <h1 className="text-3xl font-semibold tracking-normal">
-            {isSignup ? "Create account" : "Log in"}
+            {isSignup ? "注册" : "登录"}
           </h1>
           <p className="text-sm leading-6 text-zinc-600">
-            Use email and password authentication with Supabase.
+            使用邮箱和密码访问你的求职记录。
           </p>
         </div>
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <label className="block space-y-2">
-            <span className="text-sm font-medium">Email</span>
+            <span className="text-sm font-medium">邮箱</span>
             <input
               className="w-full rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-900"
               name="email"
@@ -87,7 +87,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           </label>
 
           <label className="block space-y-2">
-            <span className="text-sm font-medium">Password</span>
+            <span className="text-sm font-medium">密码</span>
             <input
               className="w-full rounded-md border border-zinc-300 px-3 py-2 outline-none focus:border-zinc-900"
               minLength={6}
@@ -117,10 +117,10 @@ export function AuthForm({ mode }: AuthFormProps) {
             type="submit"
           >
             {isSubmitting
-              ? "Please wait..."
+              ? "请稍候..."
               : isSignup
-                ? "Create account"
-                : "Log in"}
+                ? "注册"
+                : "登录"}
           </button>
         </form>
 
@@ -129,13 +129,39 @@ export function AuthForm({ mode }: AuthFormProps) {
             className="font-medium underline"
             href={isSignup ? "/login" : "/signup"}
           >
-            {isSignup ? "Log in instead" : "Create an account"}
+            {isSignup ? "改为登录" : "注册账户"}
           </Link>
           <Link className="text-zinc-600 underline" href="/logout">
-            Log out
+            退出登录
           </Link>
         </div>
       </section>
     </main>
   );
+}
+
+function getAuthErrorMessage(message: string) {
+  const normalizedMessage = message.toLowerCase();
+
+  if (normalizedMessage.includes("invalid login credentials")) {
+    return "邮箱或密码不正确。";
+  }
+
+  if (normalizedMessage.includes("email not confirmed")) {
+    return "邮箱尚未完成确认，请先查看确认邮件。";
+  }
+
+  if (normalizedMessage.includes("user already registered")) {
+    return "该邮箱已注册，请直接登录。";
+  }
+
+  if (normalizedMessage.includes("password")) {
+    return "密码不符合要求，请检查后重试。";
+  }
+
+  if (/[\u4e00-\u9fff]/.test(message)) {
+    return message;
+  }
+
+  return "认证请求失败，请稍后重试。";
 }

@@ -5,11 +5,11 @@ import type { Job, JobStatus } from "@/types/job";
 import { JOB_STATUSES } from "@/types/job";
 
 const statusLabels: Record<JobStatus, string> = {
-  saved: "Saved",
-  applied: "Applied",
-  interview: "Interview",
-  offer: "Offer",
-  rejected: "Rejected",
+  saved: "已收藏",
+  applied: "已投递",
+  interview: "面试中",
+  offer: "已获得 Offer",
+  rejected: "已拒绝",
 };
 
 const statusStyles: Record<
@@ -73,13 +73,12 @@ export function JobsList({
   if (jobs.length === 0) {
     return (
       <section className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-12 text-center shadow-sm">
-        <p className="text-sm font-medium text-zinc-500">Job list</p>
+        <p className="text-sm font-medium text-zinc-500">岗位列表</p>
         <h2 className="mt-2 text-xl font-semibold tracking-normal">
-          No jobs saved yet
+          暂无岗位记录
         </h2>
         <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-600">
-          Use the Add job form to create your first record. Once saved, each job
-          will appear here with its company, role, status, and notes.
+          使用新增岗位表单创建第一条记录。保存后，每个岗位都会在这里显示公司、职位、状态和备注。
         </p>
       </section>
     );
@@ -89,29 +88,29 @@ export function JobsList({
     <section className="flex flex-col gap-4">
       <div className="flex flex-col gap-1 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold tracking-normal">Jobs</h2>
+          <h2 className="text-lg font-semibold tracking-normal">岗位</h2>
           <p className="text-sm text-zinc-600">
             {filteredJobs.length === jobs.length
-              ? `${jobs.length} saved ${jobs.length === 1 ? "record" : "records"}`
-              : `${filteredJobs.length} of ${jobs.length} ${jobs.length === 1 ? "record" : "records"}`}
+              ? `已保存 ${jobs.length} 条记录`
+              : `共 ${jobs.length} 条，当前显示 ${filteredJobs.length} 条`}
           </p>
         </div>
       </div>
 
       <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_13rem]">
         <label className="block space-y-2">
-          <span className="text-sm font-medium text-zinc-700">Search</span>
+          <span className="text-sm font-medium text-zinc-700">搜索</span>
           <input
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             onChange={(event) => setSearchQuery(event.target.value)}
-            placeholder="Search title, company, notes, location, source"
+            placeholder="搜索岗位、公司、备注、工作地点、来源"
             type="search"
             value={searchQuery}
           />
         </label>
 
         <label className="block space-y-2">
-          <span className="text-sm font-medium text-zinc-700">Status</span>
+          <span className="text-sm font-medium text-zinc-700">状态</span>
           <select
             className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-900"
             onChange={(event) =>
@@ -119,7 +118,7 @@ export function JobsList({
             }
             value={statusFilter}
           >
-            <option value="all">All</option>
+            <option value="all">全部</option>
             {JOB_STATUSES.map((status) => (
               <option key={status} value={status}>
                 {statusLabels[status]}
@@ -132,7 +131,7 @@ export function JobsList({
       {filteredJobs.length === 0 ? (
         <div className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-10 text-center shadow-sm">
           <p className="text-sm font-medium text-zinc-700">
-            No matching jobs found
+            未找到符合条件的岗位
           </p>
         </div>
       ) : null}
@@ -169,7 +168,7 @@ export function JobsList({
 
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
                   <select
-                    aria-label={`Update status for ${job.job_title}`}
+                    aria-label={`更新「${job.job_title}」的状态`}
                     className={`w-full rounded-md border px-3 py-2 text-sm font-medium outline-none focus:border-zinc-900 disabled:cursor-not-allowed disabled:bg-zinc-100 sm:w-36 ${styles.select}`}
                     disabled={updatingJobId === job.id}
                     onChange={(event) =>
@@ -190,7 +189,7 @@ export function JobsList({
                     onClick={() => onDelete(job)}
                     type="button"
                   >
-                    {deletingJobId === job.id ? "Deleting..." : "Delete"}
+                    {deletingJobId === job.id ? "删除中..." : "删除"}
                   </button>
                 </div>
               </div>
@@ -198,7 +197,7 @@ export function JobsList({
               <dl className="mt-5 grid gap-4 border-t border-zinc-100 pt-4 sm:grid-cols-2 xl:grid-cols-4">
                 <div>
                   <dt className="text-xs font-medium uppercase text-zinc-500">
-                    Location
+                    工作地点
                   </dt>
                   <dd className="mt-1 text-sm text-zinc-800">
                     {job.location || "-"}
@@ -206,7 +205,7 @@ export function JobsList({
                 </div>
                 <div>
                   <dt className="text-xs font-medium uppercase text-zinc-500">
-                    Salary
+                    薪资
                   </dt>
                   <dd className="mt-1 text-sm text-zinc-800">
                     {job.salary || "-"}
@@ -214,7 +213,7 @@ export function JobsList({
                 </div>
                 <div>
                   <dt className="text-xs font-medium uppercase text-zinc-500">
-                    Source
+                    来源
                   </dt>
                   <dd className="mt-1 text-sm text-zinc-800">
                     {job.source || "-"}
@@ -222,7 +221,7 @@ export function JobsList({
                 </div>
                 <div>
                   <dt className="text-xs font-medium uppercase text-zinc-500">
-                    Created
+                    创建时间
                   </dt>
                   <dd className="mt-1 text-sm text-zinc-800">
                     {formatDate(job.created_at)}
@@ -233,10 +232,10 @@ export function JobsList({
               <div className="mt-4 grid gap-4 border-t border-zinc-100 pt-4 lg:grid-cols-[1fr_auto] lg:items-start">
                 <div>
                   <p className="text-xs font-medium uppercase text-zinc-500">
-                    Notes
+                    备注
                   </p>
                   <p className="mt-1 whitespace-pre-wrap text-sm leading-6 text-zinc-800">
-                    {job.notes || "No notes added."}
+                    {job.notes || "暂无备注。"}
                   </p>
                 </div>
 
@@ -248,10 +247,10 @@ export function JobsList({
                       rel="noreferrer"
                       target="_blank"
                     >
-                      Open job
+                      打开岗位
                     </a>
                   ) : (
-                    <span className="text-sm text-zinc-500">No job link</span>
+                    <span className="text-sm text-zinc-500">暂无岗位链接</span>
                   )}
                 </div>
               </div>
@@ -268,7 +267,7 @@ function formatDate(value: string | null) {
     return "-";
   }
 
-  return new Intl.DateTimeFormat("en", {
+  return new Intl.DateTimeFormat("zh-CN", {
     dateStyle: "medium",
   }).format(new Date(value));
 }
