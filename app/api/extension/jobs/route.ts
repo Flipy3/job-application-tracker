@@ -8,6 +8,8 @@ type ExtensionJobRequest = {
   title?: string;
   company?: string;
   salary?: string;
+  location?: string;
+  source?: string;
   url?: string;
   notes?: string;
 };
@@ -99,7 +101,9 @@ export async function POST(request: Request) {
         job_title: title,
         job_url: toNullableString(body.url),
         salary: toNullableString(body.salary),
+        location: toNullableString(body.location),
         notes: toNullableString(body.notes),
+        source: toNullableString(body.source),
         status: "saved",
       })
       .select(selectedJobFields)

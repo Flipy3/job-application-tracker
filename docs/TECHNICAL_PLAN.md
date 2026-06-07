@@ -671,6 +671,7 @@ job-application-tracker/
 | Milestone 2C：Dashboard Polish | Completed | 统计卡片、状态徽章、卡片式列表、Empty State 与 Dashboard 布局优化已完成 |
 | Milestone 3A：Chrome Extension Foundation | Completed | Manifest V3、Popup 基础表单、当前标签页 URL 填充与 Content Script 基础文件已完成 |
 | Milestone 3B：Chrome Extension Save to Supabase | Completed | Extension 通过 Next.js API Route 认证并写入 Supabase `jobs` 表，默认 status 为 `saved` |
+| Milestone 3B.1：Location and Source Field Support | Completed | Extension Popup 和保存 API 已支持手动填写并保存 Location / Source；Dashboard Create 与 Job Card 已支持对应字段 |
 | Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 

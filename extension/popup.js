@@ -6,6 +6,8 @@ const passwordInput = document.getElementById("password");
 const titleInput = document.getElementById("job-title");
 const companyInput = document.getElementById("company");
 const salaryInput = document.getElementById("salary");
+const locationInput = document.getElementById("location");
+const sourceInput = document.getElementById("source");
 const urlInput = document.getElementById("job-url");
 const notesInput = document.getElementById("notes");
 const saveButton = document.getElementById("save-button");
@@ -35,6 +37,8 @@ jobForm.addEventListener("submit", async (event) => {
     title: titleInput.value.trim(),
     company: companyInput.value.trim(),
     salary: salaryInput.value.trim(),
+    location: locationInput.value.trim(),
+    source: sourceInput.value.trim(),
     url: urlInput.value.trim(),
     notes: notesInput.value.trim(),
     status: "saved"

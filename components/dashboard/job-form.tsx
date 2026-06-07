@@ -101,7 +101,7 @@ export function JobForm({ isSubmitting, onCreate }: JobFormProps) {
             className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
             name="source"
             onChange={(event) => updateField("source", event.target.value)}
-            placeholder="boss, liepin, linkedin"
+            placeholder="Boss直聘, LinkedIn, Seek, 公司官网"
             value={formState.source}
           />
         </label>

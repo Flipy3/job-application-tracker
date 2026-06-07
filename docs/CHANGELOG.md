@@ -75,9 +75,24 @@
 - 未新增第三方依赖
 - 未实现自动解析岗位名称、公司名称或薪资
 
+### Milestone 3B.1 Completed
+
+- Chrome Extension Popup 新增 Location 输入框
+- Chrome Extension Popup 新增 Source 输入框，支持手动填写 Boss直聘、LinkedIn、Seek、公司官网等来源
+- Extension Save Job 请求新增提交 `location` 和 `source`
+- `POST /api/extension/jobs` 写入 Supabase `jobs.location` 和 `jobs.source`
+- Dashboard Create form 已支持 Location / Source，本阶段仅更新 Source placeholder 示例
+- Dashboard Job Card 已显示 Location / Source，本阶段无需新增展示逻辑
+- 当前 Dashboard 仅支持 status update，未新增大型编辑弹窗
+- 未修改数据库 Schema
+- 未修改 Auth / RLS
+- 未使用 service_role key
+- 未新增第三方依赖
+- 未实现自动解析或自动识别来源网站
+
 ### Current Stable Version
 
-- `b761ce4 feat: add chrome extension foundation`
+- `76517ab feat: save extension jobs to supabase`
 
 ### Next Actions
 
@@ -85,3 +100,4 @@
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
+- 注意：Milestone 3B.1 仅补齐手动填写 Location / Source 的创建、展示和 Extension 保存链路。
