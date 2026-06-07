@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import type { Job, JobStatus } from "@/types/job";
 import { JOB_STATUSES } from "@/types/job";
 
@@ -61,6 +62,14 @@ export function JobsList({
   onStatusChange,
   updatingJobId,
 }: JobsListProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<JobStatus | "all">("all");
+
+  const filteredJobs = useMemo(
+    () => filterJobs(jobs, searchQuery, statusFilter),
+    [jobs, searchQuery, statusFilter],
+  );
+
   if (jobs.length === 0) {
     return (
       <section className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-12 text-center shadow-sm">
@@ -82,13 +91,54 @@ export function JobsList({
         <div>
           <h2 className="text-lg font-semibold tracking-normal">Jobs</h2>
           <p className="text-sm text-zinc-600">
-            {jobs.length} saved {jobs.length === 1 ? "record" : "records"}
+            {filteredJobs.length === jobs.length
+              ? `${jobs.length} saved ${jobs.length === 1 ? "record" : "records"}`
+              : `${filteredJobs.length} of ${jobs.length} ${jobs.length === 1 ? "record" : "records"}`}
           </p>
         </div>
       </div>
 
+      <div className="grid gap-3 rounded-lg border border-zinc-200 bg-white p-4 shadow-sm lg:grid-cols-[1fr_13rem]">
+        <label className="block space-y-2">
+          <span className="text-sm font-medium text-zinc-700">Search</span>
+          <input
+            className="w-full rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-900"
+            onChange={(event) => setSearchQuery(event.target.value)}
+            placeholder="Search title, company, notes, location, source"
+            type="search"
+            value={searchQuery}
+          />
+        </label>
+
+        <label className="block space-y-2">
+          <span className="text-sm font-medium text-zinc-700">Status</span>
+          <select
+            className="w-full rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm outline-none focus:border-zinc-900"
+            onChange={(event) =>
+              setStatusFilter(event.target.value as JobStatus | "all")
+            }
+            value={statusFilter}
+          >
+            <option value="all">All</option>
+            {JOB_STATUSES.map((status) => (
+              <option key={status} value={status}>
+                {statusLabels[status]}
+              </option>
+            ))}
+          </select>
+        </label>
+      </div>
+
+      {filteredJobs.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-10 text-center shadow-sm">
+          <p className="text-sm font-medium text-zinc-700">
+            No matching jobs found
+          </p>
+        </div>
+      ) : null}
+
       <div className="grid gap-4">
-        {jobs.map((job) => {
+        {filteredJobs.map((job) => {
           const styles = statusStyles[job.status];
 
           return (
@@ -221,4 +271,32 @@ function formatDate(value: string | null) {
   return new Intl.DateTimeFormat("en", {
     dateStyle: "medium",
   }).format(new Date(value));
+}
+
+function filterJobs(
+  jobs: Job[],
+  searchQuery: string,
+  statusFilter: JobStatus | "all",
+) {
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  return jobs.filter((job) => {
+    const matchesStatus =
+      statusFilter === "all" || job.status === statusFilter;
+    const matchesSearch =
+      !normalizedQuery ||
+      [
+        job.job_title,
+        job.company_name,
+        job.notes,
+        job.location,
+        job.source,
+      ]
+        .filter(Boolean)
+        .join(" ")
+        .toLowerCase()
+        .includes(normalizedQuery);
+
+    return matchesStatus && matchesSearch;
+  });
 }

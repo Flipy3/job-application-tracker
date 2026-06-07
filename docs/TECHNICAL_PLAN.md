@@ -341,6 +341,33 @@ MVP 筛选：
 - 薪资筛选
 - 日期范围筛选
 
+### 6.5 Milestone 4B - Dashboard Search and Filter
+
+目标：为 Dashboard 增加岗位搜索和状态筛选能力，方便管理通过 Chrome Extension 或手动方式保存的岗位记录。
+
+当前实现：
+
+- Dashboard Jobs List 增加 Search 输入框
+- Search 使用 client-side filtering，不请求 Supabase
+- Search 输入时实时过滤
+- Search 不区分大小写
+- Search 匹配字段：`job_title`、`company_name`、`notes`、`location`、`source`
+- Dashboard Jobs List 增加 Status Filter
+- Status Filter 选项：All、Saved、Applied、Interview、Offer、Rejected
+- Status Filter 默认值为 All
+- Search 和 Status Filter 组合生效
+- 原始 `jobs` 为空时，保留现有 `No jobs saved yet` empty state
+- 原始 `jobs` 存在但筛选结果为空时，显示 `No matching jobs found`
+
+本阶段明确不做：
+
+- Supabase schema 修改
+- Auth / RLS 修改
+- Chrome Extension 修改
+- Boss 解析逻辑修改
+- 服务端搜索或数据库查询过滤
+- 第三方依赖引入
+
 ---
 
 ## 7. 浏览器插件设计
@@ -810,7 +837,8 @@ job-application-tracker/
 | Milestone 3C.1：Boss Search Result Detail Panel Parsing | Completed | Boss 搜索结果页右侧详情面板可优先解析；字段不足时从关联左侧岗位卡片补齐 |
 | Milestone 3D：Extension Authentication UX | Completed | Popup 可通过 `chrome.storage.local` 本地恢复 Email / Password，并支持 Clear Credentials 清除本地凭据 |
 | Milestone 4A：Duplicate Job URL Detection | Completed | Extension 保存 API 已在插入前检查同一用户下相同 `job_url`；重复时返回 `409`，Popup 显示 `该岗位链接已保存` |
-| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存与 M4A 重复链接提示；后续继续按子 Milestone 推进 |
+| Milestone 4B：Dashboard Search and Filter | Completed | Dashboard Jobs List 已支持按关键词实时搜索，并支持 All / Saved / Applied / Interview / Offer / Rejected 状态筛选 |
+| Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存、M4A 重复链接提示与 M4B Dashboard 搜索筛选；后续继续按子 Milestone 推进 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 
 ---
@@ -875,18 +903,18 @@ MVP 完成后，可以考虑以下方向：
 
 当前最优先的下一步是：
 
-**手动验收 Milestone 4A：Duplicate Job URL Detection。**
+**手动验收 Milestone 4B：Dashboard Search and Filter。**
 
 建议给 Codex 的下一条指令：
 
 ```text
-请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4A。
+请根据 docs/TECHNICAL_PLAN.md 和 docs/CHANGELOG.md，协助我验收 Milestone 4B。
 要求：
 1. 不提交 Git
-2. 按手动测试步骤验证重复 URL 保存
-3. 确认重复时 API 返回 409
-4. 确认 Popup 显示“该岗位链接已保存”
-5. 确认空 URL 仍允许保存
+2. 按手动测试步骤验证 Dashboard 搜索
+3. 确认 Status Filter 默认 All，并可按状态筛选
+4. 确认 Search 和 Status Filter 组合生效
+5. 确认无匹配结果时显示“No matching jobs found”
 ```
 
 

@@ -156,13 +156,35 @@
 - 未新增多平台解析、AI 功能、URL canonical 处理或 query 参数清洗
 - 未新增第三方依赖
 
+## 2026-06-08
+
+### Milestone 4B Completed
+
+- Milestone 4B - Dashboard Search and Filter 已完成
+- Dashboard Jobs List 新增 Search 输入框
+- Search 使用 client-side filtering，不请求 Supabase
+- Search 输入时实时过滤
+- Search 不区分大小写
+- Search 匹配字段包含 title、company、notes、location、source
+- Dashboard Jobs List 新增 Status Filter
+- Status Filter 选项包含 All、Saved、Applied、Interview、Offer、Rejected
+- Status Filter 默认值为 All
+- Search 和 Status Filter 可组合生效
+- 原始 jobs 为空时，保留现有 `No jobs saved yet` empty state
+- 原始 jobs 存在但筛选结果为空时，显示 `No matching jobs found`
+- 未修改 Supabase schema
+- 未修改 Auth / RLS
+- 未修改 Chrome Extension
+- 未修改 Boss 解析逻辑
+- 未新增第三方依赖
+
 ### Current Stable Version
 
 - `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 4A；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
+- 下一步计划：手动验收 Milestone 4B；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
@@ -171,3 +193,4 @@
 - 注意：Milestone 3C.1 仅补充 Boss 搜索结果页右侧详情面板解析，不包含其他网站、AI、自动投递或保存链路变更。
 - 注意：Milestone 3D 仅优化 Extension Popup 凭据输入体验，不包含 OAuth、session sync、RLS、schema、Dashboard 或保存链路变更。
 - 注意：Milestone 4A 仅实现同一用户下完全相同 `job_url` 的重复保存提示，不包含 Dashboard CRUD、Boss 解析逻辑、schema、RLS、URL canonical 处理或多平台扩展。
+- 注意：Milestone 4B 仅实现 Dashboard client-side 搜索和状态筛选，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端搜索或第三方依赖。
