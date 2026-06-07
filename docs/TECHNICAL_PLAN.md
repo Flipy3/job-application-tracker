@@ -449,6 +449,41 @@ Boss 直聘 DOM 选择器：
 - 多网站解析
 - 重复链接提示
 
+### 7.7 Milestone 3C.1 - Boss Search Result Detail Panel Parsing
+
+目标：当用户在 Boss 直聘搜索结果页点击左侧岗位并打开右侧详情面板时，Popup 自动读取当前面板中的岗位信息。
+
+本阶段继续仅支持 Boss 直聘，不支持 LinkedIn、Seek、Indeed、猎聘、拉勾或其他平台。
+
+当前实现：
+
+- 保留 Milestone 3C 的 `/job_detail/` 独立职位详情页解析逻辑
+- 新增 `/web/geek/jobs` 和 `/web/geek/job` 搜索结果页解析入口
+- Popup 打开时优先解析当前可见的右侧详情面板
+- 如果右侧详情面板字段不完整，从关联或标题匹配到的左侧 `.job-card-wrapper` 岗位卡片补齐字段
+- 如果搜索页右侧详情面板解析失败，再 fallback 到原有独立详情页解析
+- 如果仍无法解析，返回空字段并保留用户手动填写能力
+- Source 自动填充为 `Boss直聘`
+- 不修改 Supabase 保存链路、Auth、RLS 或 Schema
+
+Boss 搜索结果页新增 DOM 选择器：
+
+- Panel root：`.user-center-job-detail-box`、`.job-detail-card`、`.job-detail-box`、`.job-detail-panel`、`.job-detail-container`、`.job-detail-content`
+- Panel Job Title：`.job-detail-info .job-name`、`.job-detail-header .job-name`、`.job-detail-header .title`、`.job-header-info .job-name`、`.job-name`、`.job-title`
+- Panel Company：`.company-name a`、`.company-name`、`.company-info .name`、`.job-company .name`、`.company-card .name`、`.job-detail-header .intro`
+- Panel Salary：`.job-detail-info .job-salary`、`.job-detail-header .job-salary`、`.job-salary`、`.salary`、`.red`
+- Panel Location：`.job-address .job-address-desc`、`.job-address-desc`、`.job-detail-header .job-area`、`.job-detail-info .job-area`、`.tag-list li:first-child`、`.job-area`、`.location`
+- Card fallback：`.job-card-wrapper` 内的 `.job-card-left .job-title .job-name`、`.job-card-left .salary`、`.job-card-left .job-area-wrapper .job-area`、`.job-card-right .company-name a`；当面板与卡片不是父子关系时，用面板岗位标题匹配左侧卡片
+
+本阶段明确不做：
+
+- AI 分析
+- JD 总结
+- 技能提取
+- 自动投递
+- 多网站解析
+- Supabase 保存链路变更
+
 ---
 
 ## 8. 认证方案
@@ -713,6 +748,7 @@ job-application-tracker/
 | Milestone 3B：Chrome Extension Save to Supabase | Completed | Extension 通过 Next.js API Route 认证并写入 Supabase `jobs` 表，默认 status 为 `saved` |
 | Milestone 3B.1：Location and Source Field Support | Completed | Extension Popup 和保存 API 已支持手动填写并保存 Location / Source；Dashboard Create 与 Job Card 已支持对应字段 |
 | Milestone 3C：Boss Job Auto Parsing | Completed | Boss 直聘职位详情页可通过 Content Script 自动解析 Job Title、Company、Salary、Location，并在 Popup 中自动填充 |
+| Milestone 3C.1：Boss Search Result Detail Panel Parsing | Completed | Boss 搜索结果页右侧详情面板可优先解析；字段不足时从关联左侧岗位卡片补齐 |
 | Milestone 4：岗位页面解析与保存 | Not Started | 待开始 |
 | Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
 

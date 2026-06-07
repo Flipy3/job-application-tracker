@@ -105,15 +105,33 @@
 - 未修改 Auth / RLS
 - 未新增第三方依赖
 
+### Milestone 3C.1 Completed
+
+- Milestone 3C.1 - Boss 搜索结果页右侧详情面板解析已完成
+- 保留 Boss 独立职位详情页 `/job_detail/` 解析逻辑
+- 新增 Boss 搜索结果页 `/web/geek/jobs` 与 `/web/geek/job` 解析入口
+- Popup 打开时优先读取搜索结果页当前展示的右侧详情面板
+- 右侧详情面板字段不足时，会从关联的左侧岗位卡片补齐 Job Title、Company、Salary、Location
+- 右侧详情面板解析失败时 fallback 到原有独立职位详情页解析
+- 非 Boss 页面继续返回空字段，不报错
+- 解析失败时仍允许用户手动填写
+- Source 仍自动填充为 `Boss直聘`
+- 未新增其他招聘网站支持
+- 未新增 AI、自动投递、JD 总结或技能提取
+- 未修改 Supabase 保存链路
+- 未修改 Auth / RLS / Schema
+- 未新增第三方依赖
+
 ### Current Stable Version
 
 - `c09fcbe feat: support location and source in extension`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 3C；验收通过后再进入重复链接提示或后续 Milestone。
+- 下一步计划：手动验收 Milestone 3C.1；验收通过后再进入重复链接提示或后续 Milestone。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
 - 注意：Milestone 3B.1 仅补齐手动填写 Location / Source 的创建、展示和 Extension 保存链路。
 - 注意：Milestone 3C 仅支持 Boss 直聘职位详情页自动解析与填表，未包含多平台解析、AI 功能或重复链接提示。
+- 注意：Milestone 3C.1 仅补充 Boss 搜索结果页右侧详情面板解析，不包含其他网站、AI、自动投递或保存链路变更。
