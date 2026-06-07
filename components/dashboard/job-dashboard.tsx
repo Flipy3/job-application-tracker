@@ -8,6 +8,7 @@ import { JobForm } from "@/components/dashboard/job-form";
 import { JobsList } from "@/components/dashboard/jobs-list";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { CreateJobInput, Job, JobStatus } from "@/types/job";
+import { JOB_STATUSES } from "@/types/job";
 
 export function JobDashboard() {
   const router = useRouter();
@@ -217,17 +218,20 @@ export function JobDashboard() {
     }
   }
 
+  const stats = getDashboardStats(jobs);
+
   return (
-    <main className="min-h-screen bg-zinc-50 px-6 py-8 text-zinc-950">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
+    <main className="min-h-screen bg-zinc-50 px-4 py-6 text-zinc-950 sm:px-6 lg:py-8">
+      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <header className="flex flex-col gap-4 border-b border-zinc-200 pb-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-medium text-zinc-500">Milestone 2B</p>
+            <p className="text-sm font-medium text-zinc-500">Milestone 2C</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal">
               Dashboard
             </h1>
             <p className="mt-2 text-sm text-zinc-600">
-              Create, read, update, and delete job records saved to Supabase.
+              Track job opportunities, application progress, and follow-up
+              notes in one place.
             </p>
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -258,14 +262,32 @@ export function JobDashboard() {
           </section>
         ) : (
           <>
-            <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />
-            <JobsList
-              deletingJobId={deletingJobId}
-              jobs={jobs}
-              onDelete={handleDeleteJob}
-              onStatusChange={handleUpdateStatus}
-              updatingJobId={updatingJobId}
-            />
+            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
+              {stats.map((stat) => (
+                <div
+                  className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm"
+                  key={stat.label}
+                >
+                  <p className="text-xs font-medium uppercase text-zinc-500">
+                    {stat.label}
+                  </p>
+                  <p className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
+                    {stat.value}
+                  </p>
+                </div>
+              ))}
+            </section>
+
+            <section className="grid gap-6 xl:grid-cols-[24rem_1fr] xl:items-start">
+              <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />
+              <JobsList
+                deletingJobId={deletingJobId}
+                jobs={jobs}
+                onDelete={handleDeleteJob}
+                onStatusChange={handleUpdateStatus}
+                updatingJobId={updatingJobId}
+              />
+            </section>
           </>
         )}
       </div>
@@ -276,4 +298,43 @@ export function JobDashboard() {
 function toNullable(value: string) {
   const trimmedValue = value.trim();
   return trimmedValue.length > 0 ? trimmedValue : null;
+}
+
+const statusLabels: Record<JobStatus, string> = {
+  saved: "Saved",
+  applied: "Applied",
+  interview: "Interview",
+  offer: "Offer",
+  rejected: "Rejected",
+};
+
+function getDashboardStats(jobs: Job[]) {
+  const statusCounts = JOB_STATUSES.reduce<Record<JobStatus, number>>(
+    (counts, status) => ({
+      ...counts,
+      [status]: 0,
+    }),
+    {
+      saved: 0,
+      applied: 0,
+      interview: 0,
+      offer: 0,
+      rejected: 0,
+    },
+  );
+
+  jobs.forEach((job) => {
+    statusCounts[job.status] += 1;
+  });
+
+  return [
+    {
+      label: "Total Jobs",
+      value: jobs.length,
+    },
+    ...JOB_STATUSES.map((status) => ({
+      label: statusLabels[status],
+      value: statusCounts[status],
+    })),
+  ];
 }
