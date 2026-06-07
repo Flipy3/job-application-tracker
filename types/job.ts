@@ -1,11 +1,12 @@
-export type JobStatus =
-  | "saved"
-  | "applied"
-  | "communicating"
-  | "interviewing"
-  | "offer"
-  | "rejected"
-  | "closed";
+export const JOB_STATUSES = [
+  "saved",
+  "applied",
+  "interview",
+  "offer",
+  "rejected",
+] as const;
+
+export type JobStatus = (typeof JOB_STATUSES)[number];
 
 export type Job = {
   id: string;

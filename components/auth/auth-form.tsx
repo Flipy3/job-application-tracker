@@ -64,7 +64,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     <main className="flex min-h-screen items-center justify-center bg-background px-6 text-foreground">
       <section className="w-full max-w-md space-y-8 rounded-lg border border-zinc-200 bg-white p-8">
         <div className="space-y-2">
-          <p className="text-sm font-medium text-zinc-500">Milestone 2A</p>
+          <p className="text-sm font-medium text-zinc-500">Milestone 2B</p>
           <h1 className="text-3xl font-semibold tracking-normal">
             {isSignup ? "Create account" : "Log in"}
           </h1>

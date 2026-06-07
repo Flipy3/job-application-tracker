@@ -7,7 +7,7 @@ import type { User } from "@supabase/supabase-js";
 import { JobForm } from "@/components/dashboard/job-form";
 import { JobsList } from "@/components/dashboard/jobs-list";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
-import type { CreateJobInput, Job } from "@/types/job";
+import type { CreateJobInput, Job, JobStatus } from "@/types/job";
 
 export function JobDashboard() {
   const router = useRouter();
@@ -15,6 +15,8 @@ export function JobDashboard() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
+  const [updatingJobId, setUpdatingJobId] = useState<string | null>(null);
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
 
@@ -123,17 +125,109 @@ export function JobDashboard() {
     }
   }
 
+  async function handleUpdateStatus(job: Job, status: JobStatus) {
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
+    if (job.status === status) {
+      return;
+    }
+
+    setUpdatingJobId(job.id);
+    setError("");
+    setMessage("");
+
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { data, error: updateError } = await supabase
+        .from("jobs")
+        .update({ status })
+        .eq("id", job.id)
+        .eq("user_id", user.id)
+        .select(
+          "id,user_id,company_name,job_title,job_url,salary,location,status,notes,source,created_at,updated_at",
+        )
+        .single();
+
+      if (updateError) {
+        throw updateError;
+      }
+
+      setJobs((currentJobs) =>
+        currentJobs.map((currentJob) =>
+          currentJob.id === job.id ? (data as Job) : currentJob,
+        ),
+      );
+      setMessage("Job status updated.");
+    } catch (updateError) {
+      setError(
+        updateError instanceof Error
+          ? updateError.message
+          : "Unable to update job status.",
+      );
+    } finally {
+      setUpdatingJobId(null);
+    }
+  }
+
+  async function handleDeleteJob(job: Job) {
+    if (!user) {
+      router.replace("/login");
+      return;
+    }
+
+    const shouldDelete = window.confirm(
+      `Delete ${job.job_title} at ${job.company_name}?`,
+    );
+
+    if (!shouldDelete) {
+      return;
+    }
+
+    setDeletingJobId(job.id);
+    setError("");
+    setMessage("");
+
+    try {
+      const supabase = createSupabaseBrowserClient();
+      const { error: deleteError } = await supabase
+        .from("jobs")
+        .delete()
+        .eq("id", job.id)
+        .eq("user_id", user.id);
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      setJobs((currentJobs) =>
+        currentJobs.filter((currentJob) => currentJob.id !== job.id),
+      );
+      setMessage("Job deleted.");
+    } catch (deleteError) {
+      setError(
+        deleteError instanceof Error
+          ? deleteError.message
+          : "Unable to delete job.",
+      );
+    } finally {
+      setDeletingJobId(null);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-zinc-50 px-6 py-8 text-zinc-950">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6">
         <header className="flex flex-col gap-4 border-b border-zinc-200 pb-6 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-medium text-zinc-500">Milestone 2A</p>
+            <p className="text-sm font-medium text-zinc-500">Milestone 2B</p>
             <h1 className="mt-2 text-3xl font-semibold tracking-normal">
               Dashboard
             </h1>
             <p className="mt-2 text-sm text-zinc-600">
-              Create and read job records saved to Supabase.
+              Create, read, update, and delete job records saved to Supabase.
             </p>
           </div>
           <div className="flex items-center gap-4 text-sm">
@@ -165,7 +259,13 @@ export function JobDashboard() {
         ) : (
           <>
             <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />
-            <JobsList jobs={jobs} />
+            <JobsList
+              deletingJobId={deletingJobId}
+              jobs={jobs}
+              onDelete={handleDeleteJob}
+              onStatusChange={handleUpdateStatus}
+              updatingJobId={updatingJobId}
+            />
           </>
         )}
       </div>

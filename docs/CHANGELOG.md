@@ -18,11 +18,23 @@
 - 手动验收通过
 - Create/Read/Persistence 验证通过
 
+### Milestone 2B Completed
+
+- 用户可以修改 Job Status
+- 状态枚举固定为 `saved`、`applied`、`interview`、`offer`、`rejected`
+- Jobs List 中显示状态下拉框
+- 状态修改后立即更新 Supabase
+- 更新成功后同步刷新 UI
+- 用户可以删除 Job
+- 删除前进行确认
+- 删除成功后同步刷新 UI
+- Dashboard CRUD 闭环完成
+
 ### Current Stable Version
 
-- `8b427b7 docs: add milestone changelog`
+- `9e3d619 docs: record milestone 2A completion`
 
 ### Next Actions
 
-- 下一步计划：Milestone 2B。
-- 注意：Milestone 2A 未包含 Update、Delete、筛选、搜索、统计、详情页、Chrome Extension 或 AI 功能。
+- 下一步计划：Milestone 2C。
+- 注意：Milestone 2B 未包含搜索、筛选、统计、图表、详情页、Chrome Extension 或 AI 功能。

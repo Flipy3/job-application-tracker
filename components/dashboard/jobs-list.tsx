@@ -1,22 +1,31 @@
 "use client";
 
-import type { Job } from "@/types/job";
+import type { Job, JobStatus } from "@/types/job";
+import { JOB_STATUSES } from "@/types/job";
 
-const statusLabels: Record<Job["status"], string> = {
+const statusLabels: Record<JobStatus, string> = {
   saved: "Saved",
   applied: "Applied",
-  communicating: "Communicating",
-  interviewing: "Interviewing",
+  interview: "Interview",
   offer: "Offer",
   rejected: "Rejected",
-  closed: "Closed",
 };
 
 type JobsListProps = {
   jobs: Job[];
+  deletingJobId: string | null;
+  onDelete: (job: Job) => Promise<void>;
+  onStatusChange: (job: Job, status: JobStatus) => Promise<void>;
+  updatingJobId: string | null;
 };
 
-export function JobsList({ jobs }: JobsListProps) {
+export function JobsList({
+  deletingJobId,
+  jobs,
+  onDelete,
+  onStatusChange,
+  updatingJobId,
+}: JobsListProps) {
   if (jobs.length === 0) {
     return (
       <section className="rounded-lg border border-dashed border-zinc-300 bg-white p-8 text-center">
@@ -46,6 +55,7 @@ export function JobsList({ jobs }: JobsListProps) {
               <th className="px-4 py-3 font-medium">Status</th>
               <th className="px-4 py-3 font-medium">Created</th>
               <th className="px-4 py-3 font-medium">Link</th>
+              <th className="px-4 py-3 font-medium">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-zinc-100">
@@ -65,7 +75,20 @@ export function JobsList({ jobs }: JobsListProps) {
                   {job.source || "-"}
                 </td>
                 <td className="px-4 py-3 text-zinc-700">
-                  {statusLabels[job.status] ?? job.status}
+                  <select
+                    className="w-32 rounded-md border border-zinc-300 bg-white px-2 py-1.5 text-sm outline-none focus:border-zinc-900 disabled:cursor-not-allowed disabled:bg-zinc-100"
+                    disabled={updatingJobId === job.id}
+                    onChange={(event) =>
+                      onStatusChange(job, event.target.value as JobStatus)
+                    }
+                    value={job.status}
+                  >
+                    {JOB_STATUSES.map((status) => (
+                      <option key={status} value={status}>
+                        {statusLabels[status]}
+                      </option>
+                    ))}
+                  </select>
                 </td>
                 <td className="px-4 py-3 text-zinc-700">
                   {formatDate(job.created_at)}
@@ -83,6 +106,16 @@ export function JobsList({ jobs }: JobsListProps) {
                   ) : (
                     <span className="text-zinc-500">-</span>
                   )}
+                </td>
+                <td className="px-4 py-3">
+                  <button
+                    className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:cursor-not-allowed disabled:bg-zinc-100 disabled:text-zinc-500"
+                    disabled={deletingJobId === job.id}
+                    onClick={() => onDelete(job)}
+                    type="button"
+                  >
+                    {deletingJobId === job.id ? "Deleting..." : "Delete"}
+                  </button>
                 </td>
               </tr>
             ))}

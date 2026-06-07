@@ -2,8 +2,8 @@
 
 Job Application Tracker is a Next.js application for tracking job applications.
 
-Current status: Milestone 2A supports Supabase authentication plus Dashboard
-Create and Read for job records.
+Current status: Milestone 2B supports Supabase authentication plus Dashboard
+Create, Read, Update, and Delete for job records.
 
 ## Tech Stack
 
@@ -41,6 +41,6 @@ The technical plan is the source of truth for this project:
 
 - docs/TECHNICAL_PLAN.md
 
-Milestone 2A only includes Dashboard Create and Read. Update, Delete, filtering,
-search, statistics, detail pages, Chrome Extension, and AI are intentionally
-deferred to later milestones.
+Milestone 2B completes the Dashboard CRUD loop. Filtering, search, statistics,
+detail pages, Chrome Extension, and AI are intentionally deferred to later
+milestones.
