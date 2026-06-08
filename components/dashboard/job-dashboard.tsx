@@ -13,6 +13,7 @@ import {
   getJobAnalyticsBreakdown,
   getJobAnalyticsOverview,
 } from "@/lib/analytics/jobs";
+import { trackEvent } from "@/lib/analytics";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { CreateJobInput, Job, JobStatus } from "@/types/job";
 
@@ -60,6 +61,7 @@ export function JobDashboard() {
         if (isMounted) {
           setUser(currentUser);
           setJobs((data ?? []) as Job[]);
+          trackEvent("page_view", { page: "dashboard" });
         }
       } catch (dashboardError) {
         if (isMounted) {
@@ -117,8 +119,15 @@ export function JobDashboard() {
         throw createError;
       }
 
-      setJobs((currentJobs) => [data as Job, ...currentJobs]);
+      const createdJob = data as Job;
+
+      setJobs((currentJobs) => [createdJob, ...currentJobs]);
       setMessage("岗位已保存。");
+      trackEvent("job_created", {
+        job_id: createdJob.id,
+        company: createdJob.company_name,
+        status: createdJob.status,
+      });
       return true;
     } catch (createError) {
       setError(
@@ -162,12 +171,19 @@ export function JobDashboard() {
         throw updateError;
       }
 
+      const updatedJob = data as Job;
+
       setJobs((currentJobs) =>
         currentJobs.map((currentJob) =>
-          currentJob.id === job.id ? (data as Job) : currentJob,
+          currentJob.id === job.id ? updatedJob : currentJob,
         ),
       );
       setMessage("岗位状态已更新。");
+      trackEvent("job_status_changed", {
+        job_id: updatedJob.id,
+        old_status: job.status,
+        new_status: updatedJob.status,
+      });
     } catch (updateError) {
       setError(
         updateError instanceof Error
@@ -213,6 +229,11 @@ export function JobDashboard() {
         currentJobs.filter((currentJob) => currentJob.id !== job.id),
       );
       setMessage("岗位已删除。");
+      trackEvent("job_deleted", {
+        job_id: job.id,
+        company: job.company_name,
+        status: job.status,
+      });
     } catch (deleteError) {
       setError(
         deleteError instanceof Error
