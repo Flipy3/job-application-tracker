@@ -1,0 +1,4 @@
+interface:
+  display_name: "Product Builder Workflow"
+  short_description: "标准化产品开发到上线流程，覆盖需求、实现、验证与提交"
+  default_prompt: "Use $product-builder-workflow to plan and implement the next milestone for my Job Application Tracker project."
