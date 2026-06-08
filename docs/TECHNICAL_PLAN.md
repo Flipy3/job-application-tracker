@@ -484,6 +484,48 @@ MVP 筛选：
 - 除 Boss location UI 文案清理外的其他 Chrome Extension 修改
 - Supabase Schema / RLS / Auth 修改
 
+### 6.10 Milestone 5C - Analytics Polish, Theme Toggle and Deployment Readiness
+
+目标：根据 Milestone 5B 手动验收反馈，清理开发阶段 UI 标记，提高 Web App 用户可见文字对比度，增加浅色 / 深色模式切换，并完成部署前检查。
+
+当前实现：
+
+- 已从用户可见页面移除开发阶段 Milestone 文案
+- Landing Page 不再显示 `里程碑 2B`
+- Login / Signup Auth 表单不再显示 `里程碑 2B`
+- Logout Page 不再显示 `里程碑 2B`
+- Dashboard Header 不再显示 `里程碑 2C`
+- 新增轻量 `ThemeToggle` 组件，用于切换浅色模式 / 深色模式
+- Theme Toggle 已加入 Landing Page、Login Page、Signup Page、Logout Page 和 Dashboard Header 右上角
+- 主题按钮显示当前模式文案：`浅色模式` 或 `深色模式`
+- 默认主题采用浅色模式，以保持当前产品默认视觉稳定
+- 用户选择保存到 `localStorage`，key 为 `job-tracker-theme`
+- 刷新页面时通过 body 顶部的早期脚本恢复用户主题偏好
+- 使用 Tailwind v4 `@custom-variant dark` 实现 class-based dark mode
+- `<html>` 使用 `suppressHydrationWarning`，避免主题 class 在 hydration 前后不一致导致 warning
+- Login / Signup / Logout / Landing 页面使用明确的浅色和深色主题样式，避免白色卡片继承浅色文字
+- Login / Signup 的 Email / Password label、输入框文字、登录 / 注册 / 退出登录链接使用更深的 zinc 色阶
+- Dashboard Header、loading state、Job Form、Jobs List、Analytics Overview、Analytics Breakdown 的辅助文字、字段 label、空状态和部分状态徽章对比度已小幅提高
+- 表单输入框、搜索框、下拉框和 textarea 明确设置深色文字与可读 placeholder
+- Dashboard、Job Form、Analytics Overview、Analytics Breakdown、Job Cards、Search / Filter / Sort 控件均补充暗色模式样式
+- Deployment readiness 检查已执行：`npm run lint` 与 `npm run build` 均通过
+- `npm audit --audit-level=high` 未发现 high / critical 漏洞；当前 Next 依赖链报告 moderate PostCSS advisory，自动修复建议为破坏性降级，因此本阶段不执行依赖变更
+- 保持整体简洁风格，未进行大规模 UI 重构
+
+本阶段明确不做：
+
+- Supabase 修改
+- Auth 逻辑修改
+- RLS 修改
+- Schema 修改
+- API Route 修改
+- Chrome Extension 功能修改
+- Chrome Extension Popup 深色模式支持
+- Analytics 计算逻辑修改
+- Job CRUD 修改
+- Search / Filter / Sort 修改
+- 大规模 UI 重构或新增第三方依赖
+
 ---
 
 ## 7. 浏览器插件设计
@@ -957,7 +999,10 @@ job-application-tracker/
 | Milestone 4C：Dashboard Localization (ZH-CN) | Completed | Web App 与 Chrome Extension 用户可见文案已统一为简体中文，状态内部枚举值保持不变 |
 | Milestone 4D：Dashboard Sort | Completed | Dashboard Jobs List 已支持默认排序、最新优先、最早优先、公司名称 A-Z、公司名称 Z-A client-side 排序，并可与搜索和状态筛选组合使用 |
 | Milestone 4：岗位页面解析与保存 | In Progress | 已完成 Boss 解析、Extension 保存、M4A 重复链接提示、M4B Dashboard 搜索筛选、M4C 简体中文本地化与 M4D Dashboard 排序；后续继续按子 Milestone 推进 |
-| Milestone 5：打磨与作品集展示 | Not Started | 待开始 |
+| Milestone 5A：Analytics Overview | Completed | Dashboard 已展示岗位总数、投递总数、面试数、面试率、Offer 数和 Offer 率 KPI |
+| Milestone 5B：Analytics Breakdown | Completed | Dashboard 已展示状态分布、来源 Top 5 和城市 Top 5，使用轻量卡片和进度条，不引入图表库 |
+| Milestone 5C：Analytics Polish, Theme Toggle and Deployment Readiness | Completed | 已移除用户可见开发阶段 Milestone 文案，提高 Web App 对比度，新增浅色 / 深色模式切换，并完成 lint/build/audit 部署前检查 |
+| Milestone 5：打磨与作品集展示 | In Progress | 已完成 M5A Analytics Overview、M5B Analytics Breakdown 与 M5C UI 清理、主题切换和部署前检查；后续继续按用户验收反馈推进 |
 
 ---
 

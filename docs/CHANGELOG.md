@@ -256,13 +256,49 @@
 - 未新增第三方依赖
 - 未提交 Git，等待用户验收
 
+### Milestone 5C Completed
+
+- Milestone 5C - Analytics Polish, Theme Toggle and Deployment Readiness 已完成
+- 已从用户可见页面移除开发阶段 Milestone 文案
+- Landing Page 不再显示 `里程碑 2B`
+- Login / Signup Auth 表单不再显示 `里程碑 2B`
+- Logout Page 不再显示 `里程碑 2B`
+- Dashboard Header 不再显示 `里程碑 2C`
+- 新增 `ThemeToggle` 组件，用于切换浅色模式 / 深色模式
+- Theme Toggle 已加入 Landing Page、Login Page、Signup Page、Logout Page 和 Dashboard Header 右上角
+- 主题按钮显示当前模式文案：`浅色模式` 或 `深色模式`
+- 默认主题采用浅色模式，以保持当前产品默认视觉稳定
+- 用户主题偏好保存到 `localStorage`，key 为 `job-tracker-theme`
+- 刷新页面后会通过 body 顶部早期脚本恢复用户主题偏好
+- 使用 Tailwind v4 `@custom-variant dark` 实现 class-based dark mode
+- `<html>` 使用 `suppressHydrationWarning`，避免主题 class 在 hydration 前后不一致导致 warning
+- Login / Signup / Logout / Landing 页面使用明确的浅色和深色主题样式，避免白色卡片继承浅色文字
+- Login / Signup 的 Email / Password label、输入框文字、登录 / 注册 / 退出登录链接对比度已提高
+- Dashboard Header、loading state、Job Form、Jobs List、Analytics Overview、Analytics Breakdown 的辅助文字、字段 label、空状态和部分状态徽章对比度已小幅提高
+- Job Form、Search、Status Filter、Sort、Job Card 状态下拉框等表单控件明确设置深色文字
+- Dashboard、Job Form、Analytics Overview、Analytics Breakdown、Job Cards、Search / Filter / Sort 控件均补充暗色模式样式
+- Deployment readiness 检查已执行：`npm run lint` 通过
+- Deployment readiness 检查已执行：`npm run build` 通过
+- `npm audit --audit-level=high` 未发现 high / critical 漏洞；当前 Next 依赖链报告 moderate PostCSS advisory，自动修复建议为破坏性降级，因此本阶段不执行依赖变更
+- 保持整体简洁风格，未进行大规模 UI 重构
+- 未修改 Supabase
+- 未修改 Auth / RLS / Schema
+- 未修改 API Route
+- 未修改 Chrome Extension 功能
+- 未修改 Chrome Extension Popup 深色模式
+- 未修改 Analytics 计算逻辑
+- 未修改 Job CRUD
+- 未修改 Search / Filter / Sort 逻辑
+- 未新增第三方依赖
+- 未提交 Git，等待用户验收
+
 ### Current Stable Version
 
 - `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 5B；验收通过后等待用户决定是否提交 Git 或继续 Milestone 5C。
+- 下一步计划：手动验收 Milestone 5C；验收通过后等待用户决定是否提交 Git 或继续下一阶段。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
@@ -276,3 +312,4 @@
 - 注意：Milestone 4D 仅实现 Dashboard client-side 排序，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端排序或第三方依赖。
 - 注意：Milestone 5A 仅实现 Analytics Overview KPI Cards，不包含状态分布、来源 Top 5、城市 Top 5、图表、schema、Auth、RLS、Chrome Extension 或第三方依赖。
 - 注意：Milestone 5B 仅实现 Analytics Breakdown，不包含图表、日期趋势、周统计、月统计、状态历史、来源归一化、schema、Auth、RLS、Chrome Extension 或第三方依赖；城市归一化仅用于 Location Top 5 展示。
+- 注意：Milestone 5C 仅进行 Analytics Polish、Web App 主题切换与部署前检查，不包含 schema、Auth、RLS、API Route、Chrome Extension 功能或 Popup 深色模式、Analytics 计算、Job CRUD、Search / Filter / Sort 逻辑或第三方依赖修改。

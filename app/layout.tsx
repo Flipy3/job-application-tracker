@@ -26,8 +26,21 @@ export default function RootLayout({
     <html
       lang="zh-CN"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+try {
+  var theme = window.localStorage.getItem("job-tracker-theme");
+  document.documentElement.classList.toggle("dark", theme === "dark");
+} catch (_) {}
+            `.trim(),
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

@@ -42,16 +42,16 @@ export function AnalyticsOverview({ overview }: AnalyticsOverviewProps) {
     <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {cards.map((card) => (
         <div
-          className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm"
+          className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
           key={card.label}
         >
-          <p className="text-xs font-medium uppercase text-zinc-500">
+          <p className="text-xs font-medium uppercase text-zinc-600 dark:text-zinc-400">
             {card.label}
           </p>
-          <p className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
+          <p className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950 dark:text-zinc-50">
             {card.value}
           </p>
-          <p className="mt-1 text-xs leading-5 text-zinc-500">{card.helper}</p>
+          <p className="mt-1 text-xs leading-5 text-zinc-600 dark:text-zinc-400">{card.helper}</p>
         </div>
       ))}
     </section>
