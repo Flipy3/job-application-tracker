@@ -1,14 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
 import { AnalyticsBreakdown } from "@/components/dashboard/analytics-breakdown";
 import { AnalyticsOverview } from "@/components/dashboard/analytics-overview";
+import { DashboardShell } from "@/components/dashboard/dashboard-shell";
 import { JobForm } from "@/components/dashboard/job-form";
 import { JobsList } from "@/components/dashboard/jobs-list";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
 import {
   getJobAnalyticsBreakdown,
   getJobAnalyticsOverview,
@@ -249,63 +248,45 @@ export function JobDashboard() {
   const analyticsBreakdown = getJobAnalyticsBreakdown(jobs);
 
   return (
-    <main className="min-h-screen bg-zinc-50 px-4 py-6 text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50 sm:px-6 lg:py-8">
-      <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
-        <header className="flex flex-col gap-4 border-b border-zinc-200 pb-6 dark:border-zinc-800 md:flex-row md:items-end md:justify-between">
-          <div>
-            <h1 className="text-3xl font-semibold tracking-normal">
-              求职看板
-            </h1>
-            <p className="mt-2 text-sm text-zinc-700 dark:text-zinc-300">
-              在一个地方管理岗位机会、投递进度和跟进备注。
-            </p>
-          </div>
-          <div className="flex flex-wrap items-center gap-4 text-sm">
-            <ThemeToggle />
-            {user?.email ? (
-              <span className="text-zinc-700 dark:text-zinc-300">{user.email}</span>
-            ) : null}
-            <Link className="font-medium text-zinc-950 underline dark:text-zinc-50" href="/logout">
-              退出登录
-            </Link>
-          </div>
-        </header>
+    <DashboardShell
+      description="在一个地方管理岗位机会、投递进度和跟进备注。"
+      title="求职看板"
+      userEmail={user?.email}
+    >
+      {error ? (
+        <p className="rounded-md border border-zinc-300 bg-white p-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
+          {error}
+        </p>
+      ) : null}
 
-        {error ? (
-          <p className="rounded-md border border-zinc-300 bg-white p-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
-            {error}
-          </p>
-        ) : null}
+      {message ? (
+        <p className="rounded-md border border-zinc-300 bg-white p-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
+          {message}
+        </p>
+      ) : null}
 
-        {message ? (
-          <p className="rounded-md border border-zinc-300 bg-white p-3 text-sm text-zinc-900 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100">
-            {message}
-          </p>
-        ) : null}
+      {isLoading ? (
+        <section className="rounded-lg border border-zinc-200 bg-white p-8 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
+          正在加载求职看板...
+        </section>
+      ) : (
+        <>
+          <AnalyticsOverview overview={analyticsOverview} />
+          <AnalyticsBreakdown breakdown={analyticsBreakdown} />
 
-        {isLoading ? (
-          <section className="rounded-lg border border-zinc-200 bg-white p-8 text-sm text-zinc-700 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-300">
-            正在加载求职看板...
+          <section className="grid gap-6 xl:grid-cols-[24rem_1fr] xl:items-start">
+            <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />
+            <JobsList
+              deletingJobId={deletingJobId}
+              jobs={jobs}
+              onDelete={handleDeleteJob}
+              onStatusChange={handleUpdateStatus}
+              updatingJobId={updatingJobId}
+            />
           </section>
-        ) : (
-          <>
-            <AnalyticsOverview overview={analyticsOverview} />
-            <AnalyticsBreakdown breakdown={analyticsBreakdown} />
-
-            <section className="grid gap-6 xl:grid-cols-[24rem_1fr] xl:items-start">
-              <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />
-              <JobsList
-                deletingJobId={deletingJobId}
-                jobs={jobs}
-                onDelete={handleDeleteJob}
-                onStatusChange={handleUpdateStatus}
-                updatingJobId={updatingJobId}
-              />
-            </section>
-          </>
-        )}
-      </div>
-    </main>
+        </>
+      )}
+    </DashboardShell>
   );
 }
 

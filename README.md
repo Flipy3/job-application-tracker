@@ -1,5 +1,7 @@
 # Job Application Tracker
 
+Live Demo: https://jobtrackerzephyr.xyz
+
 Job Application Tracker 是一个求职进度管理工具，用于把不同招聘网站上的岗位记录集中保存到 Web Dashboard 中。当前版本包含 Supabase 登录、岗位 CRUD、统计看板和一个本地加载的 Chrome Extension MVP。
 
 ## 项目亮点
