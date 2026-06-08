@@ -2,6 +2,15 @@
 
 Job Application Tracker 是一个求职进度管理工具，用于把不同招聘网站上的岗位记录集中保存到 Web Dashboard 中。当前版本包含 Supabase 登录、岗位 CRUD、统计看板和一个本地加载的 Chrome Extension MVP。
 
+## 项目亮点
+
+- 基于 Next.js + Supabase 构建的求职管理平台
+- Chrome Extension 支持 Boss直聘岗位一键采集
+- 支持岗位新增、编辑、删除、搜索、筛选和排序
+- Analytics Dashboard 提供投递率、面试率和 Offer 率分析
+- 支持浅色 / 深色主题切换
+- 使用 Supabase Auth + RLS 实现用户数据隔离
+
 ## 功能列表
 
 - 用户注册、登录和退出登录
@@ -97,17 +106,24 @@ http://localhost:3000
 
 注意：当前 MVP 会把 Email / Password 保存在 `chrome.storage.local`，仅用于本地测试便利。生产版本应改为更安全的 session、token 或 OAuth 方案。
 
-## 项目截图
 
-截图占位：
+## 登录页
 
-- Landing Page
-- Login / Signup
-- Dashboard
-- Analytics Overview
-- Analytics Breakdown
-- Chrome Extension Popup
+![Login](./images/login.png)
 
+## Analytics Dashboard
+
+![Dashboard](./images/dashboard.png)
+
+## Chrome Extension
+
+![Extension](./images/extension-popup_1.png)
+![Extension](./images/extension-popup_2.png)
+
+## Page Display
+
+![Page](./images/manually_add_position.png)
+![Page](/images/position.png)
 ## Future Roadmap
 
 - Extension 认证改为 session、token 或 OAuth，不再保存密码
