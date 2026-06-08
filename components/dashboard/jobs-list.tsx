@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { cleanLocationText } from "@/lib/location";
 import type { Job, JobStatus } from "@/types/job";
 import { JOB_STATUSES } from "@/types/job";
 
@@ -251,7 +252,7 @@ export function JobsList({
                     工作地点
                   </dt>
                   <dd className="mt-1 text-sm text-zinc-800">
-                    {job.location || "-"}
+                    {formatDisplayLocation(job.location)}
                   </dd>
                 </div>
                 <div>
@@ -340,7 +341,7 @@ function getVisibleJobs(
         job.job_title,
         job.company_name,
         job.notes,
-        job.location,
+        formatDisplayLocation(job.location),
         job.source,
       ]
         .filter(Boolean)
@@ -392,4 +393,12 @@ function compareCompanyNames(firstJob: Job, secondJob: Job) {
 
 function getDisplayCompanyName(companyName: string) {
   return companyName.replace(/^公司名称\s*/, "").trim();
+}
+
+function formatDisplayLocation(location: string | null) {
+  if (!location) {
+    return "-";
+  }
+
+  return cleanLocationText(location) || "-";
 }

@@ -214,13 +214,55 @@
 - 未新增第三方依赖
 - 未提交 Git，等待用户验收
 
+### Milestone 5A Completed
+
+- Milestone 5A - Analytics Overview 已完成
+- 新增 `lib/analytics/jobs.ts` 统一处理 Dashboard 岗位统计计算逻辑
+- 新增 Analytics Overview，Dashboard 顶部展示 6 个 KPI Cards
+- KPI 包含：岗位总数、投递总数、面试数、面试率、Offer 数、Offer 率
+- 投递总数计算为 `applied + interview + offer + rejected`
+- 面试数计算为 `interview + offer`
+- 面试率计算为 `面试数 / 投递总数`
+- Offer 率计算为 `offer / 投递总数`
+- 当投递总数为 0 时，面试率和 Offer 率显示为 `0%`
+- 原有 M2C 简单统计卡片已整合为 Analytics Overview
+- 未修改 Supabase schema
+- 未修改 Auth / RLS
+- 未修改 Chrome Extension
+- 未新增第三方依赖
+- 未提交 Git，等待用户验收
+
+### Milestone 5B Completed
+
+- Milestone 5B - Analytics Breakdown 已完成
+- 新增 Analytics Breakdown 区块，位于 Analytics Overview 和新增岗位表单之间
+- Analytics Breakdown 包含：状态分布、来源 Top 5、城市 Top 5
+- 状态分布展示已收藏、已投递、面试中、已获得 Offer、已拒绝
+- 状态分布每项显示数量和百分比，百分比计算为状态数量 / 岗位总数
+- 来源统计基于 `source` 精确文本分组，空值统一显示为 `未填写`
+- 城市统计基于 `location` 归一化后的城市名分组，空值统一显示为 `未填写`
+- Boss 页面解析保存新岗位前会清理 `location` 中的 `点击查看地图`、`查看地图`、`地图` 等页面 UI 文案
+- Dashboard 岗位卡片展示旧数据时也会清理 `location` 中的页面 UI 文案，但不修改数据库原始值
+- 城市归一化会基于清理后的 `location` 统计，并 trim 空格
+- 城市归一化优先识别常见中国城市名前缀，例如北京、上海、广州、深圳、杭州、南京、苏州、成都、重庆、武汉、西安、长沙、郑州、天津、青岛、厦门、宁波、合肥、佛山、东莞
+- 城市归一化仅影响 Analytics Breakdown 展示，不修改数据库中的原始 `location`
+- 来源和城市统计按数量降序排列，仅展示 Top 5
+- 来源和城市百分比计算为对应分组数量 / 岗位总数
+- UI 使用卡片、列表、百分比和简单进度条，未引入图表库
+- 未实现图表、日期趋势、周统计、月统计、状态历史或来源归一化
+- 未修改 Supabase schema
+- 未修改 Auth / RLS
+- Chrome Extension 仅修改 Boss location 解析清理逻辑，未修改保存链路或其他插件功能
+- 未新增第三方依赖
+- 未提交 Git，等待用户验收
+
 ### Current Stable Version
 
 - `e03aff6 chore: remove parser debug logs`
 
 ### Next Actions
 
-- 下一步计划：手动验收 Milestone 4D；验收通过后等待用户决定是否提交 Git 或继续下一个子 Milestone。
+- 下一步计划：手动验收 Milestone 5B；验收通过后等待用户决定是否提交 Git 或继续 Milestone 5C。
 - 注意：Milestone 2C 未包含搜索、筛选、图表、详情页、Chrome Extension 或 AI 功能。
 - 注意：Milestone 3A 仅包含 Chrome Extension Foundation，未包含 JD 自动解析、AI 分析、搜索筛选、数据统计、飞书同步、Notion 同步或 Supabase 写入。
 - 注意：Milestone 3B 仅打通手动填写后保存到 Supabase 的数据链路，未包含自动填写岗位信息。
@@ -232,3 +274,5 @@
 - 注意：Milestone 4B 仅实现 Dashboard client-side 搜索和状态筛选，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端搜索或第三方依赖。
 - 注意：Milestone 4C 仅实现用户可见文案简体中文本地化，不包含业务逻辑、schema、Auth、API Route 保存链路、枚举值、路由或文件名修改。
 - 注意：Milestone 4D 仅实现 Dashboard client-side 排序，不包含 schema、Auth、RLS、Chrome Extension、Boss 解析逻辑、服务端排序或第三方依赖。
+- 注意：Milestone 5A 仅实现 Analytics Overview KPI Cards，不包含状态分布、来源 Top 5、城市 Top 5、图表、schema、Auth、RLS、Chrome Extension 或第三方依赖。
+- 注意：Milestone 5B 仅实现 Analytics Breakdown，不包含图表、日期趋势、周统计、月统计、状态历史、来源归一化、schema、Auth、RLS、Chrome Extension 或第三方依赖；城市归一化仅用于 Location Top 5 展示。

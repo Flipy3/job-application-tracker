@@ -423,6 +423,67 @@ MVP 筛选：
 - 服务端排序或数据库查询排序
 - 第三方依赖引入
 
+### 6.8 Milestone 5A - Analytics Overview
+
+目标：在 Dashboard 顶部增加轻量级分析总览，用 6 个 KPI 卡片替换原有简单状态统计卡片。
+
+当前实现：
+
+- 新增 `lib/analytics/jobs.ts` 统一处理岗位统计计算逻辑
+- Dashboard 顶部展示 6 个 KPI：岗位总数、投递总数、面试数、面试率、Offer 数、Offer 率
+- 投递总数计算为：`applied + interview + offer + rejected`
+- 面试数计算为：`interview + offer`
+- 面试率计算为：`面试数 / 投递总数`
+- Offer 率计算为：`offer / 投递总数`
+- 当投递总数为 0 时，面试率和 Offer 率显示为 `0%`
+- 原有 M2C 顶部简单统计卡片已整合为 Analytics Overview
+- 未新增数据库字段
+- 未新增第三方依赖
+
+本阶段明确不做：
+
+- 状态分布
+- 来源 Top 5
+- 城市 Top 5
+- 图表
+- 日期趋势、周统计或月统计
+- Chrome Extension 修改
+- Supabase Schema / RLS / Auth 修改
+
+### 6.9 Milestone 5B - Analytics Breakdown
+
+目标：在 Analytics Overview 下方增加轻量级分析拆解模块，展示当前岗位记录的状态、来源和城市构成。
+
+当前实现：
+
+- Dashboard 布局顺序调整为：Analytics Overview → Analytics Breakdown → 新增岗位 → 岗位列表
+- 新增 Analytics Breakdown 区块，使用卡片、列表、百分比和简单进度条展示，不使用图表库
+- 状态分布展示：已收藏、已投递、面试中、已获得 Offer、已拒绝
+- 状态分布每项展示数量和百分比，百分比计算为：状态数量 / 岗位总数
+- 来源统计基于 `source` 字段按精确文本分组
+- 城市统计基于 `location` 字段归一化后的城市名分组
+- 来源和城市为空时统一显示为 `未填写`
+- 来源和城市均按数量降序排列，仅展示 Top 5
+- 来源和城市百分比计算为：对应分组数量 / 岗位总数
+- 城市归一化仅影响 Analytics Breakdown 展示，不修改数据库中的原始 `location`
+- Boss 页面解析保存新岗位前会清理 `location` 中的 `点击查看地图`、`查看地图`、`地图` 等页面 UI 文案
+- Dashboard 岗位卡片展示旧数据时也会清理 `location` 中的页面 UI 文案，但不修改数据库原始值
+- 城市归一化会基于清理后的 `location` 统计，并 trim 空格
+- 城市归一化优先识别常见中国城市名前缀，例如北京、上海、广州、深圳、杭州、南京、苏州、成都、重庆、武汉、西安、长沙、郑州、天津、青岛、厦门、宁波、合肥、佛山、东莞
+- 如果无法识别城市前缀，则 fallback 为清理后的原始 `location`
+- 空数据时百分比显示为 `0%`，不显示 NaN
+
+本阶段明确不做：
+
+- Recharts、Chart.js、ECharts 或任何图表库
+- 日期趋势
+- 周统计
+- 月统计
+- 状态历史
+- 来源归一化
+- 除 Boss location UI 文案清理外的其他 Chrome Extension 修改
+- Supabase Schema / RLS / Auth 修改
+
 ---
 
 ## 7. 浏览器插件设计

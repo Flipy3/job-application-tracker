@@ -4,10 +4,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
+import { AnalyticsBreakdown } from "@/components/dashboard/analytics-breakdown";
 import { AnalyticsOverview } from "@/components/dashboard/analytics-overview";
 import { JobForm } from "@/components/dashboard/job-form";
 import { JobsList } from "@/components/dashboard/jobs-list";
-import { getJobAnalyticsOverview } from "@/lib/analytics/jobs";
+import {
+  getJobAnalyticsBreakdown,
+  getJobAnalyticsOverview,
+} from "@/lib/analytics/jobs";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { CreateJobInput, Job, JobStatus } from "@/types/job";
 
@@ -220,6 +224,7 @@ export function JobDashboard() {
   }
 
   const analyticsOverview = getJobAnalyticsOverview(jobs);
+  const analyticsBreakdown = getJobAnalyticsBreakdown(jobs);
 
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-6 text-zinc-950 sm:px-6 lg:py-8">
@@ -263,6 +268,7 @@ export function JobDashboard() {
         ) : (
           <>
             <AnalyticsOverview overview={analyticsOverview} />
+            <AnalyticsBreakdown breakdown={analyticsBreakdown} />
 
             <section className="grid gap-6 xl:grid-cols-[24rem_1fr] xl:items-start">
               <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />

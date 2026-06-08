@@ -516,7 +516,16 @@ function extractLocationText(text) {
     .map((segment) => segment.trim())
     .filter(Boolean);
 
-  return firstSegment || "";
+  return cleanLocationText(firstSegment || "");
+}
+
+function cleanLocationText(location) {
+  return normalizeText(location)
+    .replaceAll("点击查看地图", "")
+    .replaceAll("查看地图", "")
+    .replaceAll("地图", "")
+    .replace(/\s+/g, " ")
+    .trim();
 }
 
 function findSalaryTextIn(root, selectors) {
@@ -603,6 +612,7 @@ function normalizeSalaryText(text) {
 
 function cleanCompanyText(text) {
   const normalizedText = normalizeText(text)
+    .replace(/^(公司名称|公司)\s*/, "")
     .replace(/招聘HR.*$/, "")
     .replace(/HR.*$/, "")
     .replace(/[\d.]+[-~—–][\d.]+[Kk].*$/, "")
@@ -648,9 +658,9 @@ function hasParsedJobFields(job) {
 function buildBossJob(job) {
   return {
     title: job.title || "",
-    company: job.company || "",
+    company: cleanCompanyText(job.company || ""),
     salary: getSafeSalaryText(job.salary),
-    location: job.location || "",
+    location: cleanLocationText(job.location || ""),
     source: BOSS_SOURCE_NAME
   };
 }
