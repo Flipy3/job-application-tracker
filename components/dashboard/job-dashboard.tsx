@@ -4,11 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { User } from "@supabase/supabase-js";
+import { AnalyticsOverview } from "@/components/dashboard/analytics-overview";
 import { JobForm } from "@/components/dashboard/job-form";
 import { JobsList } from "@/components/dashboard/jobs-list";
+import { getJobAnalyticsOverview } from "@/lib/analytics/jobs";
 import { createSupabaseBrowserClient } from "@/lib/supabase/client";
 import type { CreateJobInput, Job, JobStatus } from "@/types/job";
-import { JOB_STATUSES } from "@/types/job";
 
 export function JobDashboard() {
   const router = useRouter();
@@ -218,7 +219,7 @@ export function JobDashboard() {
     }
   }
 
-  const stats = getDashboardStats(jobs);
+  const analyticsOverview = getJobAnalyticsOverview(jobs);
 
   return (
     <main className="min-h-screen bg-zinc-50 px-4 py-6 text-zinc-950 sm:px-6 lg:py-8">
@@ -261,21 +262,7 @@ export function JobDashboard() {
           </section>
         ) : (
           <>
-            <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-6">
-              {stats.map((stat) => (
-                <div
-                  className="rounded-lg border border-zinc-200 bg-white p-4 shadow-sm"
-                  key={stat.label}
-                >
-                  <p className="text-xs font-medium uppercase text-zinc-500">
-                    {stat.label}
-                  </p>
-                  <p className="mt-2 text-3xl font-semibold tracking-normal text-zinc-950">
-                    {stat.value}
-                  </p>
-                </div>
-              ))}
-            </section>
+            <AnalyticsOverview overview={analyticsOverview} />
 
             <section className="grid gap-6 xl:grid-cols-[24rem_1fr] xl:items-start">
               <JobForm isSubmitting={isCreating} onCreate={handleCreateJob} />
@@ -305,43 +292,4 @@ function getDashboardErrorMessage(message: string, fallback: string) {
   }
 
   return fallback;
-}
-
-const statusLabels: Record<JobStatus, string> = {
-  saved: "已收藏",
-  applied: "已投递",
-  interview: "面试中",
-  offer: "已获得 Offer",
-  rejected: "已拒绝",
-};
-
-function getDashboardStats(jobs: Job[]) {
-  const statusCounts = JOB_STATUSES.reduce<Record<JobStatus, number>>(
-    (counts, status) => ({
-      ...counts,
-      [status]: 0,
-    }),
-    {
-      saved: 0,
-      applied: 0,
-      interview: 0,
-      offer: 0,
-      rejected: 0,
-    },
-  );
-
-  jobs.forEach((job) => {
-    statusCounts[job.status] += 1;
-  });
-
-  return [
-    {
-      label: "岗位总数",
-      value: jobs.length,
-    },
-    ...JOB_STATUSES.map((status) => ({
-      label: statusLabels[status],
-      value: statusCounts[status],
-    })),
-  ];
 }
