@@ -1,4 +1,4 @@
-const API_BASE_URL = "http://localhost:3000";
+const API_BASE_URL = "https://www.jobtrackerzephyr.xyz";
 const DUPLICATE_JOB_URL_MESSAGE = "该岗位链接已保存";
 
 const jobForm = document.getElementById("job-form");
@@ -241,7 +241,7 @@ function getSaveErrorMessage(message) {
   }
 
   if (normalizedMessage.includes("failed to fetch")) {
-    return "网络请求失败，请检查网页端是否已启动";
+    return "网络请求失败，请检查线上网站是否可访问";
   }
 
   return "保存失败，请稍后重试";

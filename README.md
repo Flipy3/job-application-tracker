@@ -93,18 +93,21 @@ http://localhost:3000
 
 ## Chrome Extension 使用说明
 
-当前 Extension 位于 `extension/` 目录，适用于本地 MVP 测试。
+当前 Extension 位于 `extension/` 目录，默认连接线上站点：
 
-1. 先启动 Web App：`npm run dev`
-2. 打开 Chrome 的 `chrome://extensions`
-3. 开启 Developer mode
-4. 点击 Load unpacked
-5. 选择本项目的 `extension/` 目录
-6. 登录或注册 Web App 用户
-7. 打开 Boss 直聘岗位页面
-8. 点击扩展图标，检查自动填充字段
-9. 输入 Email / Password 后点击保存岗位
-10. 回到 `/dashboard` 查看岗位记录
+```text
+https://www.jobtrackerzephyr.xyz
+```
+
+1. 打开 Chrome 的 `chrome://extensions`
+2. 开启 Developer mode
+3. 点击 Load unpacked
+4. 选择本项目的 `extension/` 目录
+5. 使用线上站点账户的 Email / Password
+6. 打开 Boss 直聘岗位页面
+7. 点击扩展图标，检查自动填充字段
+8. 点击保存岗位
+9. 回到 `https://www.jobtrackerzephyr.xyz/dashboard` 查看岗位记录
 
 注意：当前 MVP 会把 Email / Password 保存在 `chrome.storage.local`，仅用于本地测试便利。生产版本应改为更安全的 session、token 或 OAuth 方案。
 

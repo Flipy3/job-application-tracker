@@ -25,6 +25,7 @@ type ExtensionJobResponse =
 
 const selectedJobFields =
   "id,user_id,company_name,job_title,job_url,salary,location,status,notes,source,created_at,updated_at";
+const productionWebOrigin = "https://www.jobtrackerzephyr.xyz";
 
 export async function OPTIONS(request: Request) {
   return new NextResponse(null, {
@@ -178,6 +179,6 @@ function getCorsHeaders(origin: string | null) {
     "Access-Control-Allow-Methods": "OPTIONS, POST",
     "Access-Control-Allow-Origin": origin?.startsWith("chrome-extension://")
       ? origin
-      : "http://localhost:3000",
+      : productionWebOrigin,
   };
 }

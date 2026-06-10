@@ -80,16 +80,10 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
 extension/popup.js
 ```
 
-本地开发配置：
+当前生产配置：
 
 ```js
-const API_BASE_URL = "http://localhost:3000";
-```
-
-如果 Web App 部署到 Vercel，需要把它改成线上地址：
-
-```js
-const API_BASE_URL = "https://your-vercel-domain.vercel.app";
+const API_BASE_URL = "https://www.jobtrackerzephyr.xyz";
 ```
 
 同时需要更新：
@@ -98,16 +92,10 @@ const API_BASE_URL = "https://your-vercel-domain.vercel.app";
 extension/manifest.json
 ```
 
-本地 host permission：
+当前生产 host permission：
 
 ```json
-"host_permissions": ["http://localhost:3000/*"]
-```
-
-线上 host permission 示例：
-
-```json
-"host_permissions": ["https://your-vercel-domain.vercel.app/*"]
+"host_permissions": ["https://www.jobtrackerzephyr.xyz/*"]
 ```
 
 修改后需要在 Chrome Extensions 页面重新加载 unpacked extension。

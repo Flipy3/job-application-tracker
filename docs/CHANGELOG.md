@@ -313,3 +313,20 @@
 - 注意：Milestone 5A 仅实现 Analytics Overview KPI Cards，不包含状态分布、来源 Top 5、城市 Top 5、图表、schema、Auth、RLS、Chrome Extension 或第三方依赖。
 - 注意：Milestone 5B 仅实现 Analytics Breakdown，不包含图表、日期趋势、周统计、月统计、状态历史、来源归一化、schema、Auth、RLS、Chrome Extension 或第三方依赖；城市归一化仅用于 Location Top 5 展示。
 - 注意：Milestone 5C 仅进行 Analytics Polish、Web App 主题切换与部署前检查，不包含 schema、Auth、RLS、API Route、Chrome Extension 功能或 Popup 深色模式、Analytics 计算、Job CRUD、Search / Filter / Sort 逻辑或第三方依赖修改。
+
+## 2026-06-10
+
+### Production Extension API Config Completed
+
+- Chrome Extension 保存岗位 API 地址已从 `http://localhost:3000` 切换为 `https://www.jobtrackerzephyr.xyz`
+- `extension/manifest.json` 的 `host_permissions` 已从本地开发地址切换为线上域名
+- `extension.zip` 已基于当前 `extension/` 目录重新生成，避免安装旧包时继续连接 localhost
+- `POST /api/extension/jobs` 的非插件 CORS fallback 已切换为线上域名
+- Extension 安装后不再要求本地运行 `npm run dev`
+- Popup 网络失败兜底提示已改为检查线上网站可访问性
+- README 和部署说明已更新为生产模式 Extension 使用说明
+- 保持现有 Email / Password 登录逻辑不变
+- 保持现有岗位保存请求体、重复检测、Supabase Auth 和 RLS 写入逻辑不变
+- 未修改 Supabase schema
+- 未新增数据库表
+- 未新增第三方依赖
